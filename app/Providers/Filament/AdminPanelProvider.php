@@ -1,10 +1,12 @@
 <?php
 
 namespace App\Providers\Filament;
+use Filament\Enums\ThemeMode;
 use Filament\Navigation\NavigationItem;
 use App\Filament\Resources\InvoiceResource\Widgets\RevenueChart;
 use App\Filament\Resources\InvoiceResource\Widgets\RevenueChartInPKR;
 use App\Filament\Resources\InvoiceResource\Widgets\AnnualRevenue;
+use App\Models\User;
 use Filament\Http\Middleware\Authenticate;
 
 use Filament\Http\Middleware\AuthenticateSession;
@@ -30,7 +32,9 @@ class AdminPanelProvider extends PanelProvider
     {
         return $panel
         // access dashboard with admin user role only
+       
         ->brandLogo(fn () => view('brand'))
+        ->darkModeBrandLogo(fn () => view('brand-darkMode'))
         ->favicon(asset('images/fav.png'))
             ->default()
             ->id('')
@@ -73,7 +77,9 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
-            ]);
+                \App\Http\Middleware\CheckUserRole::class . ':admin', // Apply the role check middleware for admin
+            ])
+            ;
 
             // NavigationItem::make('users')
             // ->icon('heroicon-o-user')

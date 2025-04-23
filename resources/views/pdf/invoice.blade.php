@@ -126,7 +126,7 @@
         <tr>
             <td class="right"><strong>Tax amount:</strong></td>
             <td class="right">
-                {{ $ . ($invoice->tax_amount == '' ? ' 0.00' : $invoice->tax_amount) }}
+                $ {{($invoice->tax_amount == '' ? ' 0.00' : $invoice->tax_amount) }}
             </td>
             
         </tr>

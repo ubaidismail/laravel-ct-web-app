@@ -2,12 +2,17 @@
 
 namespace App\Filament\Pages;
 
-use App\Models\User;
+use App\Filament\Resources\InvoiceResource\Widgets\AnnualRevenue;
+use App\Filament\Resources\InvoiceResource\Widgets\RevenueChart;
+use App\Filament\Resources\InvoiceResource\Widgets\RevenueChartInPKR;
+use Illuminate\Contracts\Support\Htmlable;
 
 
 
 class Dashboard extends \Filament\Pages\Dashboard
 {
+
+
 
     public function mount()
     {
@@ -19,6 +24,29 @@ class Dashboard extends \Filament\Pages\Dashboard
         return [
             'users' => $this->users,
         ];
+    }
+    public function getSubheading(): string|Htmlable|null
+    {
+        // show welcome message with user name
+        $user = auth()->user();
+        if ($user) {
+            return 'Welcome back, ' . $user->name;
+        }
+    }
+    // widgets
+    public function getWidgets(): array
+    {
+        // user isrole is not admin
+        // auth()->user() && auth()->user()->user_role === 'admin   
+        if (auth()->user() && auth()->user()->user_role === 'admin') {
+            return [
+                RevenueChart::class,
+                RevenueChartInPKR::class,
+                AnnualRevenue::class,
+            ];
+        } 
+        
+
     }
 
 }

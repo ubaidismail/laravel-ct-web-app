@@ -66,7 +66,7 @@ class InvoiceResource extends Resource
                 TextColumn::make('due_date')->label('Due Date')
                     ->formatStateUsing(fn($state) => Carbon::parse($state)->format('M d Y')),
 
-                TextColumn::make('paid_date')->label('Paid Date'),
+                TextColumn::make('paid_date_formatted')->datetime('M d Y')->label('Paid Date'),
 
 
                     TextColumn::make('project_name')
