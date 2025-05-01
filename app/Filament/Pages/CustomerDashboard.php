@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Contracts\Support\Htmlable;
 use App\Livewire\ServiceOverview;
 use App\Livewire\MyInvoices;
+use App\Livewire\CustomerDetailsPopup;
 
 
 class CustomerDashboard extends Dashboard
@@ -22,7 +23,7 @@ class CustomerDashboard extends Dashboard
         // show welcome message with user name
         $user = auth()->user();
         if ($user) {
-            return 'Welcome back, ' . $user->name;
+            return 'Welcome, ' . ucfirst($user->name);
         }
     }
     public function getWidgets(): array
@@ -34,8 +35,10 @@ class CustomerDashboard extends Dashboard
             return [
                 ServiceOverview::class,
                 MyInvoices::class,
+                CustomerDetailsPopup::class,
             ];
         }
-
     }
+
+
 }

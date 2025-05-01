@@ -12,8 +12,6 @@ use Illuminate\Contracts\Support\Htmlable;
 class Dashboard extends \Filament\Pages\Dashboard
 {
 
-
-
     public function mount()
     {
         $this->users = \App\Models\User::latest()->take(5)->get();
@@ -27,10 +25,9 @@ class Dashboard extends \Filament\Pages\Dashboard
     }
     public function getSubheading(): string|Htmlable|null
     {
-        // show welcome message with user name
         $user = auth()->user();
         if ($user) {
-            return 'Welcome back, ' . $user->name;
+            return 'Welcome, ' . $user->name;
         }
     }
     // widgets
@@ -45,8 +42,6 @@ class Dashboard extends \Filament\Pages\Dashboard
                 AnnualRevenue::class,
             ];
         } 
-        
-
     }
 
 }

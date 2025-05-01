@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Providers\Filament;
+
 use Filament\Enums\ThemeMode;
 use Filament\Navigation\NavigationItem;
 use App\Filament\Resources\InvoiceResource\Widgets\RevenueChart;
@@ -48,6 +49,7 @@ class AdminPanelProvider extends PanelProvider
                 'success' => Color::Emerald,
                 'warning' => Color::Orange,
             ])
+            // ->registration(Register::class)
             ->pages([
                 // UsersList::class,
             ])

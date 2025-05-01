@@ -11,6 +11,10 @@ use App\Http\Controllers\InvoiceController as Invoice;
 //     return view('welcome');
 // });
 
+use App\Livewire\Auth\Register;
+
+Route::get('/register', Register::class)->name('register');
+
 Route::get('/downloadInvoice/{invoice_id}', [Invoice::class, 'download'])->name('download.invoice');
 
 

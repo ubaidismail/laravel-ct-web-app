@@ -176,10 +176,12 @@ class CustomerServicesResource extends Resource
                     ->formatStateUsing(fn ($state) => ucfirst($state))
                     ->searchable(),
                 TextColumn::make('start_date')
+                    ->dateTime()
                     ->label('Start Date')
                     ->sortable()
                     ->searchable(),
                 TextColumn::make('end_date')
+                    ->dateTime()
                     ->label('End Date')
                     ->sortable()
                     ->searchable(),

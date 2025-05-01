@@ -28,7 +28,7 @@ return new class extends Migration
             $table->text('pass_for_admin_view');
             
             $table->boolean('status')->nullable()->default(0);
-        
+            $table->string('referal_code')->default('admin');
             // Assuming you're storing timestamps as strings (not recommended), but matching your schema:
             $table->string('created_at', 255);
             $table->string('updated_at', 255);

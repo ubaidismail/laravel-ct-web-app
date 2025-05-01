@@ -8,7 +8,7 @@ use Filament\Resources\Pages\Page;
 use Filament\Forms;
 use Filament\Forms\Components\{Grid, TextInput, Select, Repeater, DatePicker, Textarea, Section, Placeholder};
 use Illuminate\Support\Facades\DB;
-use App\Models\Invoices; 
+use App\Models\invoices as Invoices; 
 use App\Models\User;
 use Filament\Forms\Form;
 use Filament\Actions\Action;

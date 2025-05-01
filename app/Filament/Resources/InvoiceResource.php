@@ -5,7 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\InvoiceResource\Pages;
 
 use App\Filament\Resources\InvoiceResource\RelationManagers;
-use App\Models\Invoices;
+use App\Models\invoices;
 use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Components\TextInput;
@@ -24,7 +24,7 @@ use Filament\Tables\Actions;
 
 class InvoiceResource extends Resource
 {
-    protected static ?string $model = Invoices::class;
+    protected static ?string $model = invoices::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     protected static ?string $navigationGroup = 'Invoices';
@@ -72,7 +72,7 @@ class InvoiceResource extends Resource
                     TextColumn::make('project_name')
                     ->label('Download Invoice')
                     ->icon('heroicon-o-arrow-down')
-                    ->url(fn (Invoices $record): string => route('download.invoice', ['invoice_id' => $record->id]))
+                    ->url(fn (invoices $record): string => route('download.invoice', ['invoice_id' => $record->id]))
                     ->limit(10)
 
 
@@ -85,7 +85,7 @@ class InvoiceResource extends Resource
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make('delete')
                     ->requiresConfirmation()
-                    ->action(fn(Invoices $record) => $record->delete())
+                    ->action(fn(invoices $record) => $record->delete())
             ])
 
             ->bulkActions([

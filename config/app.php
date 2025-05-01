@@ -14,6 +14,7 @@ return [
     */
 
     'name' => env('APP_NAME', 'Laravel'),
+    'AdminMail' => env('ADMIN_MAIL', 'ubaidismail378@gmail.com'),
 
     /*
     |--------------------------------------------------------------------------
@@ -121,6 +122,7 @@ return [
     'maintenance' => [
         'driver' => env('APP_MAINTENANCE_DRIVER', 'file'),
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
+        
     ],
 
 ];

@@ -41,6 +41,7 @@ class UserResource extends Resource
                         'employee' => 'Employee',
                     ])
                     ->required()->placeholder('Select User Role'),
+                TextInput::make('phone')->required(),
                 TextInput::make('address')->required(),
                 TextInput::make('project')->required(),
                 TextInput::make('currency')->required(),
@@ -93,7 +94,7 @@ class UserResource extends Resource
             //
         ];
     }
-
+    
     public static function getPages(): array
     {
         return [

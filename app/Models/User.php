@@ -21,6 +21,7 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'phone',
         'password',
         'user_role',
         'address',
@@ -30,6 +31,7 @@ class User extends Authenticatable
         'total_amount_paid',
         'pass_for_admin_view',
         'status',
+        'referal_code',
     ];
 
     /**
@@ -55,4 +57,5 @@ class User extends Authenticatable
         ];
     }
 
+   
 }
