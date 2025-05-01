@@ -36,6 +36,7 @@ class EditInvoice extends Page implements Forms\Contracts\HasForms
     public $subtotal = 0;
     public $tax_amount = 0;
     public $total = 0;
+    public $paid_date_formatted = null;
     public $invoice_type = 0;
     public $invoice_note = '';
     public $amount_in_PKR = 0;
@@ -73,6 +74,7 @@ class EditInvoice extends Page implements Forms\Contracts\HasForms
             'client_currency' => $this->record->client_currency,
             'due_date' => $this->record->due_date,
             'invoice_type' => $this->record->invoice_type,
+            'paid_date_formatted' => $this->record->paid_date_formatted,
             'tax_rate' => $this->record->tax_rate,
             'invoice_note' => $this->record->inv_notes,
             'amount_in_PKR' => $this->record->amount_in_PKR,
@@ -153,6 +155,9 @@ class EditInvoice extends Page implements Forms\Contracts\HasForms
                     ->default('pending')
                     ->required()
                     ->placeholder('Select Invoice Type'),
+
+                DatePicker::make('paid_date_formatted')
+                    ->label('Paid Date')
                 
             ]),
             
@@ -264,7 +269,7 @@ class EditInvoice extends Page implements Forms\Contracts\HasForms
             'tax_amount' => $this->tax_amount,
             'total_amount' => $this->total,
             'invoice_type' => $data['invoice_type'],
-            'paid_date_formatted' => $data['invoice_type'] == 'paid' ? now() : null,
+            'paid_date_formatted' => $data['invoice_type'] == 'paid' ? $data['paid_date_formatted'] : null,
             'inv_notes' => $data['invoice_note'],
             'amount_in_PKR' => $data['amount_in_PKR'], // Assuming 1 USD = 280 PKR
         ]);
