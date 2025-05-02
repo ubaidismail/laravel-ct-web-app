@@ -124,9 +124,9 @@ class EditInvoice extends Page implements Forms\Contracts\HasForms
                     ->dehydrated(),
 
                 TextInput::make('client_phone')
-                    ->label('Phone')
-                    ->disabled()
-                    ->dehydrated(),
+                    ->label('Phone'),
+                    // ->disabled()
+                    // ->dehydrated(),
 
                 TextInput::make('client_email')
                     ->label('Email')
