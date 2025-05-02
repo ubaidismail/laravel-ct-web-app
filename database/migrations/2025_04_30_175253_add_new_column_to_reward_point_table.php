@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('reward_point', function (Blueprint $table) {
+        Schema::table('reward_points', function (Blueprint $table) {
             $table->string('percent_markup')->nullable()->after('referal_type');
             $table->string('status')->default('pending')->after('percent_markup');
         });
