@@ -46,6 +46,7 @@ class UserResource extends Resource
                 TextInput::make('project')->required(),
                 TextInput::make('currency')->required(),
                 TextInput::make('company')->required(),
+                TextInput::make('pass_for_admin_view')->required(),
                 TextInput::make('total_amount_paid')->numeric(true)
                 ->step(0.01)
                 ->placeholder('Enter amount paid'),
