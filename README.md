@@ -3,5 +3,5 @@
 
 
 ## About Portal 
-    This portal is for internal project maangement, invoicing and routine task management.
+    This portal is for internal project management, invoicing and routine task management.
     
