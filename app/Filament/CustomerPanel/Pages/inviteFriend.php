@@ -7,13 +7,22 @@ use Filament\Forms;
 use Filament\Forms\Form;
 use App\Models\ReferalToken;
 use App\Models\CustomerServices;
+use App\Models\RewardPoints;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Filament\Notifications\Notification;
+use Filament\Actions\Action;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Table;
+use Filament\Tables;
+use Filament\Tables\Contracts\HasTable;
+use Illuminate\Database\Eloquent\Builder;
 
 
-class inviteFriend extends Page
+class inviteFriend extends Page implements HasTable
 {
+    use Tables\Concerns\InteractsWithTable;
+
     protected static ?string $navigationIcon = 'heroicon-o-envelope';
 
     protected static string $view = 'filament.customer-panel.pages.invite-friend';
@@ -27,6 +36,36 @@ class inviteFriend extends Page
     //     // return CustomerServices::where('customer_id', Auth::id())->exists();
     // }
 
+    protected function getTableQuery(): Builder
+    {
+        return RewardPoints::query()
+            ->where('referrer_user_id', Auth::id());
+    }
+
+    protected function getTableColumns(): array
+    {
+        return [
+            TextColumn::make('project_quote_id')->label('Project ID'),
+            TextColumn::make('referrer_user_id')->label('Referrer ID'),
+            TextColumn::make('referal_type')->label('Token'),
+            TextColumn::make('percent_markup')->label('Percent Markup'),
+            TextColumn::make('amount')->label('Amount')
+            // calculate 5% of total project amount
+                ->formatStateUsing(function (RewardPoints $record) {
+                    return str_replace('$' , '', $record->amount) * $record->percent_markup / 100;
+                }),
+            TextColumn::make('status')->label('Status')
+            ->badge()
+            ->formatStateUsing(function (RewardPoints $record) {
+                return ucfirst($record->status);
+            })
+            ->color(function ($state) {
+                return $state ==  'pending' || $state == 'cancelled' ||  $state == 'started' ? 'warning' : 'success';
+            })
+
+        ];
+    }
+    
     public function mount()
     {
         $referralCode = ReferalToken::where('referrer_user_id', Auth::id())->first();
@@ -63,11 +102,7 @@ class inviteFriend extends Page
             ->success()
             ->send();
     }
-    
 
-    // public function create() : void
-    // {
-       
-    // }
+  
     
 }

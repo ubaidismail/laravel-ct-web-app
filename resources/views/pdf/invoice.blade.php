@@ -51,6 +51,13 @@
     </style>
 </head>
 <body>
+    @php
+     function cleanPhone($phone) {
+    // Remove invisible / non-printable Unicode characters
+        $phone = preg_replace('/[\x00-\x1F\x7F\xA0\xAD\x{200B}-\x{200F}\x{202A}-\x{202E}\x{2066}-\x{2069}]/u', '', $phone);
+        return trim($phone);
+    }   
+    @endphp
     <div class="header">
         <div class="flex_div">
             <div class="left_head_meta">

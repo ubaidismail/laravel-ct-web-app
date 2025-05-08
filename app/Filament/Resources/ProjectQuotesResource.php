@@ -32,6 +32,8 @@ class ProjectQuotesResource extends Resource
                 TextInput::make('company_name')
                     ->label('Company Name')
                     ->required(),
+                TextInput::make('customer_id')
+                    ->hidden(),
                 TextInput::make('email')
                     ->label('Email')
                     ->required(),

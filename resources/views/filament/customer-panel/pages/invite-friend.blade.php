@@ -60,4 +60,5 @@
             </ol>
         </div>
     </div>
+    {{ $this->table }}
 </x-filament-panels::page>

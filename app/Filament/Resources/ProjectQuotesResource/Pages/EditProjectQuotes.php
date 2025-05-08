@@ -27,11 +27,16 @@ class EditProjectQuotes extends EditRecord
         // Check if status has been changed to "started"
         if ($record->status === 'started') {
             
-            // Check if this project has a referral token associated with it
-            $ReferalToken = ReferalToken::where('referrer_user_id', $record->customer_id)->first();
+            // referrer means the user who referred the customer
+            // dd($record->customer_id);
             // if ($record->referral_token) {
                 // Find the user who owns this referral token
-                $referrerUser = \App\Models\User::where('referal_code', $ReferalToken->token)->first();
+                $referrerUser = \App\Models\User::where('id', $record->customer_id)->first();
+                // get referal code by customer from users table
+                $referrerUser = \App\Models\User::where('referal_code', $referrerUser->referal_code)->first();
+
+                $ReferalToken = ReferalToken::where('token', $referrerUser->referal_code)->first();
+
                 if ($referrerUser) {
                     
                     // Check if a reward point already exists for this project
@@ -41,7 +46,7 @@ class EditProjectQuotes extends EditRecord
                         // Create a new reward point
                         RewardPoints::create([
                             'project_quote_id' => $record->id,
-                            'referrer_user_id' => $referrerUser->id,
+                            'referrer_user_id' => $ReferalToken->referrer_user_id,
                             'token_id' => $ReferalToken->id,
                             'status' => $record->status,
                             'amount' => $record->total_project_amount, // Or calculate based on project value
