@@ -194,7 +194,7 @@ class CreateInvoice extends Page implements Forms\Contracts\HasForms
             Grid::make(2)->schema([
                 Textarea::make('invoice_note')
                     ->label('Invoice Note')
-                    ->placeholder('Add any notes or comments here')
+                    ->placeholder('Add comma seperated ponts or comments here')
                     ->rows(3)
                     ->maxLength(500)
             ])

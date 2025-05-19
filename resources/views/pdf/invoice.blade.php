@@ -156,10 +156,17 @@
     <div class="footer">
 
         {{-- note --}}
+        {{-- line break if there is comma after the word --}}
         @if($invoice->inv_notes)
-        <strong>Note:</strong> 
-        {{$invoice->inv_notes}}
+        <strong>Note:</strong> <br>
+        @php
+            $notes = explode(',', $invoice->inv_notes);
+            foreach ($notes as $note) {
+                echo nl2br(htmlspecialchars(trim($note))) . "<br>";
+            }
+        @endphp
         @endif
+
 
         <p><strong>Payment Terms:</strong> Net 5 of the invoice date.</p>
         <p>A late fee of 1.5% after 10 days will be applied to overdue balances.</p>
