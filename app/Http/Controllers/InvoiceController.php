@@ -18,8 +18,8 @@ class InvoiceController extends Controller
         // // Generate the PDF using a view
         $pdf = Pdf::loadView('pdf.invoice', compact('invoice'));
         // $pdf = Pdf::loadHTML('<span>Ubaid</span>', ['invoice' => $invoice]);
-      
-        return $pdf->download("invoice-$invoice->company_name #$invoice_id.pdf");
+        $file_downloaded_name = $invoice->project_name ? $invoice->project_name : $invoice->company_name; 
+        return $pdf->download("invoice-$file_downloaded_name #$invoice_id.pdf");
 
         
     }
