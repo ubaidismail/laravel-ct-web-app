@@ -14,6 +14,7 @@ class UpworkProposalGenForm extends Page
     protected static string $view = 'filament.pages.upwork-proposal-gen-form';
 
     public ?string $project_description = null;
+    public ?string $insert_your_portfolio = null;
     public ?string $result = null;
 
     public function form(Form $form): Form
@@ -24,14 +25,20 @@ class UpworkProposalGenForm extends Page
                     ->label('Project Description')
                     ->placeholder('Enter the project description here...')
                     ->required(),
+                Textarea::make('insert_your_portfolio')
+                    ->label('Add Portfolio or Links')
+                    ->placeholder('Add Portfolio or Recent Projects Links Here')
+                    ->required(),
             ])
+
             ->statePath('');
     }
 
     public function create()
     {
         $clientInput = $this->project_description;
-
+        $user_portfolio = $this->insert_your_portfolio;
+        // dd($user_portfolio);
         if (empty($clientInput)) {
             $this->result = 'Please provide a project description.';
             return;
@@ -55,9 +62,7 @@ class UpworkProposalGenForm extends Page
         
         5. Demonstrate specific expertise by referencing relevant experience, skills, and successful projects that align with the client's requirements.
 
-        5. Include recent projects: https://meddipop.com/
-        https://artdicacao.com/
-        https://laam.pk/
+        5. Include recent projects or links if provided: $user_portfolio 
 
         6. End with a specific call to action inviting further discussion (e.g looking forward to collaborating with you).
 
