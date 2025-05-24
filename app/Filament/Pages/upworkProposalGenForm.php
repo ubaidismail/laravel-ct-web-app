@@ -11,6 +11,10 @@ use App\Models\UpworkProposalGenQueries;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Filament\Forms\Components\Hidden;
+use Filament\Notifications\Notification;
+use Illuminate\Support\Facades\RateLimiter;
+
+
 
 class UpworkProposalGenForm extends Page
 {
@@ -53,6 +57,25 @@ class UpworkProposalGenForm extends Page
 
     public function create()
     {
+
+        $key = 'proposal_gen_form_' . Auth::id(); // it creates a unique cache key per user
+        
+        // 3 request per minute
+        if(RateLimiter::tooManyAttempts($key, 3)){
+            $seconds = RateLimiter::availableIn($key);
+            $minutes = ceil($seconds / 60);
+
+            Notification::make()
+            ->title('Too Many Requests')
+            ->body("Please try again after {$minutes} minutes.")
+            ->danger()
+            ->persistent()
+            ->send();
+
+            return;
+        }
+        RateLimiter::hit($key);
+
         // Get form data
         $data = $this->form->getState();
 
@@ -108,6 +131,7 @@ class UpworkProposalGenForm extends Page
         - Write excessively long proposals (stay under 300 words)";
 
         try {
+            // rate limit 3 request per minute
 
             $response = Http::withHeaders([
                 'Authorization' => 'Bearer ' . env('GROK_API_KEY'),
