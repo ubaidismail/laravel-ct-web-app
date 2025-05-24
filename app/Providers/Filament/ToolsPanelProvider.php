@@ -30,6 +30,8 @@ class ToolsPanelProvider extends PanelProvider
         ->favicon(asset('images/fav.png'))
             ->id('tools')
             ->path('tools')
+            ->login()
+            ->authGuard('web')
             ->colors([
                 'danger' => Color::Rose,
                 'gray' => Color::Gray,
