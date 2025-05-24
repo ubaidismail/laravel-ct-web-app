@@ -17,10 +17,22 @@
 
     @if ($result)
         <div class="mt-6 border p-4 rounded relative" style="background: #4f505a96;">
-            <h3 class="font-bold text-lg mb-2">AI Generated Proposal:</h3>
+            <h3 class="font-bold text-lg mb-2">
+                @if(empty($result))
+                    Error
+                @else
+                    Generated Proposal
+                @endif
+            </h3>
             {{-- proper markdown response --}}
             <div class="prose text-white">
-                {!! $result !!}
+                {{-- result empty show error var --}}
+                @if (empty($result))
+                    <p class="text-red-500"> {!! $error !!} </p>
+                @else
+                    {!! $result !!}
+                @endif
+                {{-- {!! $result !!} --}}
             </div>
             <div class="mt-4">
                 <x-filament::button 

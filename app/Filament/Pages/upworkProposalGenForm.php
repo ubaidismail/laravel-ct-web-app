@@ -6,21 +6,39 @@ use Filament\Forms\Components\Textarea;
 use Filament\Forms\Form;
 use Filament\Pages\Page;
 use Illuminate\Support\Facades\Http;
+use Filament\Forms\Components\TextInput;
+use App\Models\UpworkProposalGenQueries;
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
+use Filament\Forms\Components\Hidden;
 
 class UpworkProposalGenForm extends Page
 {
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
+    protected static ?string $navigationGroup = 'Upwork Tool';
 
     protected static string $view = 'filament.pages.upwork-proposal-gen-form';
 
     public ?string $project_description = null;
+    public ?string $user_id = null;
     public ?string $insert_your_portfolio = null;
     public ?string $result = null;
+    public ?string $error = null;
+
+    // Add this method to initialize the user_id
+    public function mount(): void
+    {
+        $this->user_id = (string) Auth::id();
+    }
 
     public function form(Form $form): Form
     {
         return $form
             ->schema([
+                // Use Hidden instead of TextInput for user_id
+                Hidden::make('user_id')
+                    ->default(fn() => Auth::id()),
+
                 Textarea::make('project_description')
                     ->label('Project Description')
                     ->placeholder('Enter the project description here...')
@@ -30,15 +48,22 @@ class UpworkProposalGenForm extends Page
                     ->placeholder('Add Portfolio or Recent Projects Links Here')
                     ->required(),
             ])
-
-            ->statePath('');
+            ->statePath(''); // This is fine, but we're handling user_id separately
     }
 
     public function create()
     {
-        $clientInput = $this->project_description;
-        $user_portfolio = $this->insert_your_portfolio;
-        // dd($user_portfolio);
+        // Get form data
+        $data = $this->form->getState();
+
+        $clientInput = $data['project_description'] ?? $this->project_description;
+        $user_portfolio = $data['insert_your_portfolio'] ?? $this->insert_your_portfolio;
+
+        // Ensure user_id is set
+        if (!$this->user_id) {
+            $this->user_id = (string) Auth::id();
+        }
+
         if (empty($clientInput)) {
             $this->result = 'Please provide a project description.';
             return;
@@ -83,13 +108,13 @@ class UpworkProposalGenForm extends Page
         - Write excessively long proposals (stay under 300 words)";
 
         try {
-            
+
             $response = Http::withHeaders([
                 'Authorization' => 'Bearer ' . env('GROK_API_KEY'),
                 'Content-Type' => 'application/json',
             ])->timeout(60)
                 ->post('https://api.groq.com/openai/v1/chat/completions', [
-                    'model' => 'llama-3.3-70b-versatile',  
+                    'model' => 'llama-3.3-70b-versatile',
                     'messages' => [
                         [
                             'role' => 'system',
@@ -106,56 +131,34 @@ class UpworkProposalGenForm extends Page
 
             $output = $response->json();
 
-            // $response = [
-            //     "id" => "chatcmpl-d5dc4987-2853-48cb-8d01-f41b63b99571",
-            //     "object" => "chat.completion",
-            //     "created" => 1747777190,
-            //     "model" => "llama-3.3-70b-versatile",
-            //     "choices" => [
-            //         [
-            //             "index" => 0,
-            //             "message" => [
-            //                 "role" => "assistant",
-            //                 "content" => "Dear [Client],\n\nI understand that you're seeking a reliable web application to streamline school admissions and fee payments. To confirm, the key requirements of this project include creating a user-friendly interface for parents to submit applications, managing student data, and facilitating secure online fee payments.\n\nIn addition to these core features, I've identified potential challenges such as ensuring data security, integrating with existing school systems, and providing timely notifications to parents and administrators. To address these concerns, I propose a comprehensive solution that incorporates robust security measures, API integrations, and customizable notification systems.\n\nThe critical success factors for this project include a seamless user experience, efficient data management, and timely payment processing. My approach will involve a structured methodology, consisting of the following key milestones: \n\n1. Requirements gathering and system design\n2. Front-end development using React and back-end development using Node.js\n3. Integration with a secure payment gateway, such as Stripe or PayPal\n4. Testing and quality assurance\n\nI'll utilize technologies like MySQL for database management and implement SSL encryption for secure data transmission. Similar projects I've worked on have resulted in a 30% reduction in administrative workload and a 25% increase in online fee payments.\n\nI'm confident in my ability to deliver a tailored web application that meets your school's specific needs. I look forward to collaborating with you to discuss this project further. You can reach me via Upwork messaging or schedule a call to explore how we can work together to create an efficient and secure school admissions and fee payment system."
-            //             ],
-            //             "logprobs" => null,
-            //             "finish_reason" => "stop"
-            //         ]
-            //     ],
-            //     "usage" => [
-            //         "queue_time" => 0.204412787,
-            //         "prompt_tokens" => 288,
-            //         "prompt_time" => 0.018227054,
-            //         "completion_tokens" => 293,
-            //         "completion_time" => 1.065454545,
-            //         "total_tokens" => 581,
-            //         "total_time" => 1.083681599
-            //     ],
-            //     "usage_breakdown" => [
-            //         "models" => null
-            //     ],
-            //     "system_fingerprint" => "fp_6507bcfb6f",
-            //     "x_groq" => [
-            //         "id" => "req_01jvqt6y31fyysdwyfxmqff15f"
-            //     ]
-            // ];
-            
-            // $output = $response;
-            
-
             if ($response->successful() && isset($output['choices'][0]['message']['content'])) {
-                $this->result = nl2br( $output['choices'][0]['message']['content'] );
+                $this->result = nl2br($output['choices'][0]['message']['content']);
             } else {
                 $this->result = "API Error: " . ($output['error']['message'] ?? 'Unknown error');
+                $this->error = $output['error']['message'] ?? 'Unknown error';
             }
 
+            // Update the component properties with form data
+            $this->project_description = $clientInput;
+            $this->insert_your_portfolio = $user_portfolio;
+
+            $this->saveData();
         } catch (\Exception $e) {
             $this->result = "Exception: " . $e->getMessage();
         }
     }
 
-    public function copyToClipboard()
+    // Save data in db
+    protected function saveData()
     {
-       
+        $data = [
+            'user_id' => $this->user_id,
+            'project_description' => $this->project_description,
+            'portfolio' => $this->insert_your_portfolio,
+            'AI_result' => $this->result,
+            'error' => $this->error,
+        ];
+
+        UpworkProposalGenQueries::create($data);
     }
 }

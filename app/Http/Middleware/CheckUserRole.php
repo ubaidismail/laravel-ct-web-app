@@ -24,7 +24,9 @@ class CheckUserRole
             // Redirect users to their appropriate panel
             if (Auth::user()->user_role === 'customer') {
                 return redirect('/customer');
-            } elseif (Auth::user()->user_role === 'admin') {
+            }elseif (Auth::user()->user_role === 'tester') {
+                return redirect('/tools');
+            }elseif (Auth::user()->user_role === 'admin') {
                 return redirect('/'); // Admin panel at root URL
             }
             
