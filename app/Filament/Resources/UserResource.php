@@ -39,6 +39,7 @@ class UserResource extends Resource
                         'customer' => 'customer',
                         'manager' => 'Manager',
                         'employee' => 'Employee',
+                        'tester' => 'Tester',
                     ])
                     ->required()->placeholder('Select User Role'),
                 TextInput::make('phone')->required(),
@@ -66,7 +67,7 @@ class UserResource extends Resource
                 TextColumn::make('name')->searchable(),
                 TextColumn::make('email')->searchable(),
                 TextColumn::make('user_role')->searchable(),
-                TextColumn::make('')->searchable()->label('Login As')->getStateUsing(function (User $record) {
+                TextColumn::make('')->label('Login As')->getStateUsing(function (User $record) {
                     // return $record->name;
                 }),
                 TextColumn::make('created_at')->date()->sortable(),
