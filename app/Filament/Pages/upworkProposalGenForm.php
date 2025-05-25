@@ -57,9 +57,11 @@ class UpworkProposalGenForm extends Page
 
     public function create()
     {
-
-        $key = 'proposal_gen_form_' . Auth::id(); // it creates a unique cache key per user
         
+        $get_ip = request()->ip(); // Get the user's IP address
+
+        $key = 'proposal_gen_form_' . $get_ip;   // it creates a unique cache key per ip
+
         // 3 request per minute
         if(RateLimiter::tooManyAttempts($key, 3)){
             $seconds = RateLimiter::availableIn($key);
