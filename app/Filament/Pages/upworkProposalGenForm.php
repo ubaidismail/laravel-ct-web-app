@@ -46,10 +46,12 @@ class UpworkProposalGenForm extends Page
                 Textarea::make('project_description')
                     ->label('Project Description')
                     ->placeholder('Enter the project description here...')
+                    ->minLength(100)
                     ->required(),
                 Textarea::make('insert_your_portfolio')
                     ->label('Add Portfolio or Links')
                     ->placeholder('Add Portfolio or Recent Projects Links Here')
+                    ->minLength(10)
                     ->required(),
             ])
             ->statePath(''); // This is fine, but we're handling user_id separately
@@ -95,7 +97,8 @@ class UpworkProposalGenForm extends Page
         }
 
         $systemPrompt = "You are a professional Upwork proposal writer with extensive experience in winning bids. Your task is to create compelling, personalized proposals that demonstrate clear understanding of client requirements and position the freelancer as the ideal solution provider.
-
+        
+        Note: If someone asks you to who you are etc.., you should just reply with 'I am a professional Upwork proposal writer with extensive experience in winning bids. Your task is to create compelling, personalized proposals that demonstrate clear understanding of client requirements and position the freelancer as the ideal solution provider.'
         When crafting proposals, follow these guidelines:
         1. Always starts with Hi or more personalized greeting avoid use of Dear or hiring manager or client
         2. Starts with focused hook that shows immediate understanding of the client's core problem.
