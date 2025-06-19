@@ -24,10 +24,22 @@ class CustomerServices extends Model
     {
         return $this->belongsTo(Users::class, 'customer_id');
     }
+    // In your app/Models/CustomerServices.php file
+   
     public function service()
     {
         return $this->belongsTo(services::class, 'service_id');
     }
+    // Check if service is expiring soon (within 7 days)
+    public function isExpiringSoon()
+    {
+        return Carbon::today()->diffInDays($this->end_date, false) <= 7 &&
+            $this->end_date >= Carbon::today();
+    }
 
+    // Get days until expiry
+    public function getDaysUntilExpiry()
+    {
+        return Carbon::today()->diffInDays($this->end_date, false);
+    }
 }
-
