@@ -15,9 +15,7 @@ Artisan::command('inspire', function () {
 
 // Send service expiry reminders every day at 9:00 AM
 Schedule::command('send:service-reminders')
-    ->dailyAt('09:00') // Morning 9:00 AM
-    // also log
-    ->timezone('Asia/Karachi')
+    ->everyMinute()
     ->before(function (){
         Log::info('Running: send:service-reminders (before execution)');
     })
