@@ -45,10 +45,18 @@ class UserResource extends Resource
                 TextInput::make('phone')->required(),
                 TextInput::make('address')->required(),
                 TextInput::make('project')->required(),
-                TextInput::make('currency')->required(),
+                Select::make('currency')
+                    ->options([
+                        '$' => 'USD',
+                        'PKR' => 'PKR',
+                    ])
+                    ->default('active')
+                    ->required()
+                    ->placeholder('Select currency'),
                 TextInput::make('company')->required(),
                 TextInput::make('pass_for_admin_view')->required(),
                 TextInput::make('total_amount_paid')->numeric(true)
+                ->default('0')
                 ->step(0.01)
                 ->placeholder('Enter amount paid'),
                 TextInput::make('password')

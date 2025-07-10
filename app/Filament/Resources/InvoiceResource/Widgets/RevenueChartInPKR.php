@@ -42,7 +42,7 @@ class RevenueChartInPKR extends ChartWidget
         return [
             'datasets' => [
                 [
-                    'label' => 'Sales',
+                    'label' => 'Monthly Sales in PKR',
                     // add $ sign
                     'data' => $revenues->toArray(),
                     'borderColor' => '#3b82f6', // blue-500

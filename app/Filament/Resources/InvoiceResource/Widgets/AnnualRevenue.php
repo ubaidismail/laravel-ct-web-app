@@ -37,19 +37,18 @@ class AnnualRevenue extends ChartWidget
         //     return Carbon::parse($invoice->paid_date_formatted)->year == $currentYear;
         // });
         $grouped = $invoices->groupBy(function ($invoice) {
-            return Carbon::parse($invoice->paid_date_formatted)->format('Y-m');
+            return Carbon::parse($invoice->paid_date_formatted)->format('Y');
         });
 
         foreach ($grouped as $month => $items) {
-            $months->push(Carbon::createFromFormat('Y-m', $month)->format('M Y'));
-            $revenues->push($items->sum('total_amount')); // or 'paid_amount' if you have that field
+            $months->push(Carbon::createFromFormat('Y', $month)->format('Y'));
+            $revenues->push($items->sum('total_amount'));
         }
         // need to concat dollor sign in the revenue
-
         return [
             'datasets' => [
                 [
-                    'label' => 'Sales',
+                    'label' => 'Annual Sales in $',
                     // add $ sign
                     'data' => $revenues->toArray(),
                     'borderColor' => '#3b82f6', // blue-500
