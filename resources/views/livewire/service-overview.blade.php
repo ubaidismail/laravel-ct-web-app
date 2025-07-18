@@ -24,18 +24,32 @@
                         ">{{ $service->service_status }}</span>
                     </div>
                 @empty
-                    <div class="text-sm text-gray-500 py-2">No services found.</div>
+                    <div class="text-sm text-gray-500 py-2">No active services found.</div>
                 @endforelse
                 </div>
                 
                 <div>
-                    <x-filament::button
-                        color="primary"
-                        tag="a"
-                        href="{{ route('filament.customer.pages.my-services')}}" 
-                        icon="heroicon-m-arrow-right">
-                        View All
-                    </x-filament::button>
+                    @php
+                        $count_service = count($services);
+                        @endphp
+                        @if($count_service == 0)
+                            <x-filament::button
+                                color="primary"
+                                tag="a"
+                                href="javascript: window.dispatchEvent(new CustomEvent('open-customer-modal'))" 
+                                icon="heroicon-m-arrow-right">
+                                Initiate a New Request
+                            </x-filament::button>
+                     @else 
+                            <x-filament::button
+                                color="primary"
+                                tag="a"
+                                href="{{ route('filament.customer.pages.my-services')}}" 
+                                icon="heroicon-m-arrow-right">
+                                View All
+                            </x-filament::button>
+                        @endif
+                    
                 </div>
             </div>
 
