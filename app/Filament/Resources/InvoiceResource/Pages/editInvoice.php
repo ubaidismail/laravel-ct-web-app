@@ -225,6 +225,7 @@ class EditInvoice extends Page implements Forms\Contracts\HasForms
             Grid::make(2)->schema([
                 Textarea::make('invoice_note')
                     ->label('Invoice Note')
+                    ->default('')
                     ->placeholder('Add any notes or comments here')
                     ->rows(3)
                     ->maxLength(500)

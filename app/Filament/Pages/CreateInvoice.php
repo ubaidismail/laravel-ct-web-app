@@ -37,6 +37,7 @@ class CreateInvoice extends Page implements Forms\Contracts\HasForms
     public $total = 0;
     public $invoice_type = 0;
     public $invoice_note = '';
+    public $amount_in_PKR = 0;
 
 
 
@@ -189,6 +190,12 @@ class CreateInvoice extends Page implements Forms\Contracts\HasForms
                         ->label('Total')
                         ->content(fn () => ($this->client_currency ?: '$') . ' ' . number_format($this->total, 2))
                         ->extraAttributes(['class' => 'font-bold text-lg']),
+
+                        TextInput::make('amount_in_PKR')
+                        ->label('Total Amount in PKR')
+                        ->numeric()
+                        ->default(fn () => $this->amount_in_PKR)
+                        ->afterStateUpdated(fn () => $this->calculateTotals())
                 ])
                 ]),
             Grid::make(2)->schema([
@@ -243,7 +250,7 @@ class CreateInvoice extends Page implements Forms\Contracts\HasForms
             'tax_amount' => $this->tax_amount,
             'total_amount' => $this->total,
             'invoice_type' => $data['invoice_type'],
-            'amount_in_PKR' => '0',
+            'amount_in_PKR' => $this->amount_in_PKR,
             'paid_date' => $data['invoice_type'] === 'paid' ? now() : '',
             'inv_notes' => $data['invoice_note'] == '' ? '' : $data['invoice_note'],
         ]);
