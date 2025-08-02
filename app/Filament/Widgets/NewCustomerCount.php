@@ -2,7 +2,7 @@
 
 namespace App\Filament\Widgets;
 
-use App\Models\Users;
+use App\Models\User as Users;
 use Filament\Widgets\Widget;
 
 class NewCustomerCount extends Widget
