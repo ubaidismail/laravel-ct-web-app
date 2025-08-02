@@ -2,7 +2,7 @@
 
 namespace App\Filament\Widgets;
 
-use App\Models\User as Users;
+use App\Models\User;
 use Filament\Widgets\Widget;
 
 class NewCustomerCount extends Widget
@@ -22,8 +22,8 @@ class NewCustomerCount extends Widget
         $previousPeriodEnd = now()->subDays(30);
         
         // Get counts for both periods
-        $currentCustomers = Users::whereBetween('created_at', [$currentPeriodStart, $currentPeriodEnd])->count();
-        $previousCustomers = Users::whereBetween('created_at', [$previousPeriodStart, $previousPeriodEnd])->count();
+        $currentCustomers = User::whereBetween('created_at', [$currentPeriodStart, $currentPeriodEnd])->count();
+        $previousCustomers = User::whereBetween('created_at', [$previousPeriodStart, $previousPeriodEnd])->count();
         
         // Calculate percentage change
         $percentageChange = $this->calculatePercentageChange($currentCustomers, $previousCustomers);
