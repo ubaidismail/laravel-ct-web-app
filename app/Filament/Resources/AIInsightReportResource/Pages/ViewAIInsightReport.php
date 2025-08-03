@@ -11,7 +11,8 @@ use Filament\Infolists\Infolist;
 class ViewAIInsightReport extends ViewRecord
 {
     protected static string $resource = AIInsightReportResource::class;
-
+    // page title
+    protected static ?string $title = 'View AI Insights Reports';
     protected function getHeaderActions(): array
     {
         return [

@@ -1,5 +1,9 @@
 <x-filament-panels::page>
     <h1>Generate Insights</h1>
     {{ $this->form }}
-    <button wire:click="generateInsights">Generate Insights</button>
+    <x-filament::button
+    wire:click="generateInsights"
+    :loading="$isGenerating"
+    loading-text="Generating Insights..."
+    >Generate Insights</x-filament::button>
 </x-filament-panels::page>

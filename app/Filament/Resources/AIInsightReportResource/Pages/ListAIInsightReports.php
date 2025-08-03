@@ -9,7 +9,7 @@ use Filament\Resources\Pages\ListRecords;
 class ListAIInsightReports extends ListRecords
 {
     protected static string $resource = AIInsightReportResource::class;
-
+    protected static ?string $title = 'AI Insights Reports';
     protected function getHeaderActions(): array
     {
         return [

@@ -230,9 +230,10 @@ class CreateInvoice extends Page implements Forms\Contracts\HasForms
     public function create(): void
     {
         $data = $this->form->getState();
+        
 
-        // Generate invoice number (you can customize this logic)
-        $invoiceNumber = 'INV-' . date('Ymd') . '-' . rand(1000, 9999);
+        try {
+            $invoiceNumber = 'INV-' . date('Ymd') . '-' . rand(1000, 9999);
 
         $invoice = Invoices::create([
             'inv_no' => $invoiceNumber,
@@ -273,8 +274,21 @@ class CreateInvoice extends Page implements Forms\Contracts\HasForms
             ->title('Invoice created successfully')
             ->success()
             ->send();
-            
-        $this->redirect('/invoices'); // Update this to match your route
+            $this->redirect('/invoices'); // Update this to match your route
+        } catch (\Throwable $th) {
+            \Log::error('Invoice update failed', [
+                'invoice_id' => $this->record->id,
+                'error' => $th->getMessage(),
+                'trace' => $th->getTraceAsString()
+            ]);
+
+            Notification::make()
+            ->title('Failed to update invoice')
+            ->body('Please check your input and try again.')
+            ->danger()
+            ->send();
+
+        }
     }
 
     protected function getHeaderActions(): array

@@ -118,61 +118,62 @@ class AIInsightsService
     }
 
     private function getServiceData($startDate): array
-    {
-        return [
-            'service_performance' => DB::table('invoices')
-                ->join('services', 'invoices.service_id', '=', 'services.id')
-                ->where('invoices.created_at', '>=', $startDate)
-                ->selectRaw('
-                    services.service_name, 
-                    services.id,
-                    SUM(invoices.total_amount) as total_revenue,
-                    COUNT(*) as total_invoices,
-                    AVG(invoices.total_amount) as avg_invoice_amount,
-                    COUNT(DISTINCT invoices.customer_id) as unique_customers
-                ')
-                ->groupBy('services.id', 'services.service_name')
-                ->orderBy('total_revenue', 'desc')
-                ->get(),
-            
-            'service_trends' => DB::table('invoices')
-                ->join('services', 'invoices.service_id', '=', 'services.id')
-                ->where('invoices.created_at', '>=', now()->subMonths(6))
-                ->selectRaw('
-                    services.service_name,
-                    DATE_FORMAT(invoices.created_at, "%Y-%m") as month,
-                    SUM(invoices.total_amount) as revenue,
-                    COUNT(*) as invoice_count
-                ')
-                ->groupBy('services.id', 'services.service_name', 'month')
-                ->orderBy('month', 'desc')
-                ->get()
-        ];
-    }
+{
+    return [
+        'service_performance' => DB::table('invoices')
+            ->join('invoice_items', 'invoices.id', '=', 'invoice_items.invoice_id')
+            ->where('invoices.created_at', '>=', $startDate)
+            ->selectRaw('
+                invoice_items.description, 
+                invoice_items.id,
+                SUM(invoice_items.quantity * invoice_items.unit_price) as total_revenue,
+                COUNT(DISTINCT invoices.id) as total_invoices,
+                AVG(invoices.total_amount) as avg_invoice_amount,
+                COUNT(DISTINCT invoices.customer_id) as unique_customers
+            ')
+            ->groupBy('invoice_items.id', 'invoice_items.description')
+            ->orderBy('total_revenue', 'desc')
+            ->get(),
+        
+        'service_trends' => DB::table('invoices')
+            ->join('invoice_items', 'invoices.id', '=', 'invoice_items.invoice_id')
+            ->where('invoices.created_at', '>=', $startDate)
+            ->selectRaw('
+                invoice_items.description,
+                invoice_items.id,
+                DATE_FORMAT(invoices.created_at, "%Y-%m") as month,
+                SUM(invoice_items.quantity * invoice_items.unit_price) as revenue,
+                COUNT(DISTINCT invoices.id) as invoice_count
+            ')
+            ->groupBy('invoice_items.id', 'invoice_items.description', 'month')
+            ->orderBy('month', 'desc')
+            ->get()
+    ];
+}
 
     private function getCustomerData($startDate): array
     {
         return [
             'top_customers' => DB::table('invoices')
-                ->join('customers', 'invoices.customer_id', '=', 'customers.id')
+                ->join('users', 'invoices.customer_id', '=', 'users.id')
                 ->where('invoices.created_at', '>=', $startDate)
                 ->selectRaw('
-                    customers.name,
+                    users.name,
                     SUM(invoices.total_amount) as total_spent,
                     COUNT(*) as total_invoices,
                     AVG(invoices.total_amount) as avg_invoice,
                     MAX(invoices.created_at) as last_invoice_date
                 ')
-                ->groupBy('customers.id', 'customers.name')
+                ->groupBy('users.id', 'users.name')
                 ->orderBy('total_spent', 'desc')
                 ->take(20)
                 ->get(),
             
             'customer_segments' => DB::table('invoices')
-                ->join('customers', 'invoices.customer_id', '=', 'customers.id')
+                ->join('users', 'invoices.customer_id', '=', 'users.id')
                 ->where('invoices.created_at', '>=', $startDate)
                 ->selectRaw('
-                    COUNT(DISTINCT customers.id) as total_customers,
+                    COUNT(DISTINCT users.id) as total_customers,
                     SUM(invoices.total_amount) as total_revenue,
                     AVG(invoices.total_amount) as avg_invoice_value
                 ')
@@ -187,9 +188,9 @@ class AIInsightsService
                 ->where('created_at', '>=', now()->subYear())
                 ->selectRaw('
                     DATE_FORMAT(created_at, "%Y-%m") as month,
-                    SUM(amount) as monthly_revenue,
+                    SUM(total_amount) as monthly_revenue,
                     COUNT(*) as monthly_invoices,
-                    AVG(amount) as avg_invoice_amount
+                    AVG(total_amount) as avg_invoice_amount
                 ')
                 ->groupBy('month')
                 ->orderBy('month')
@@ -200,7 +201,7 @@ class AIInsightsService
                 ->selectRaw('
                     WEEK(created_at) as week,
                     YEAR(created_at) as year,
-                    SUM(amount) as weekly_revenue,
+                    SUM(total_amount) as weekly_revenue,
                     COUNT(*) as weekly_invoices
                 ')
                 ->groupBy('year', 'week')

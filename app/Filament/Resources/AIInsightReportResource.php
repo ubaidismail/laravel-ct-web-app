@@ -16,8 +16,9 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class AIInsightReportResource extends Resource
 {
     protected static ?string $model = AIInsightReport::class;
-
+    protected static ?string $navigationLabel = 'AI Insights Reports';
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    
 
     public static function form(Form $form): Form
     {

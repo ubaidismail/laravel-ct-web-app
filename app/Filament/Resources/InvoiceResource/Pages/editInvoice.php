@@ -13,6 +13,8 @@ use App\Models\User;
 use Filament\Forms\Form;
 use Filament\Actions\Action;
 use Filament\Notifications\Notification;
+use Illuminate\Container\Attributes\Log;
+
 
 class EditInvoice extends Page implements Forms\Contracts\HasForms
 {
@@ -255,48 +257,59 @@ class EditInvoice extends Page implements Forms\Contracts\HasForms
     public function update(): void
     {
         $data = $this->form->getState();
-        
-        $this->record->update([
-            'customer_id' => $data['user_id'],
-            'company_name' => $data['company_name'],
-            'due_date' => $data['due_date'],
-            'address' => $data['client_address'],
-            'client_phone' => $data['client_phone'],
-            'client_email' => $data['client_email'],
-            'project_name' => $data['project_name'],
-            'client_currency' => $data['client_currency'],
-            'sub_total' => $this->subtotal,
-            'tax_rate' => $data['tax_rate'],
-            'tax_amount' => $this->tax_amount,
-            'total_amount' => $this->total,
-            'invoice_type' => $data['invoice_type'],
-            'paid_date_formatted' => $data['invoice_type'] == 'paid' ? $data['paid_date_formatted'] : null,
-            'inv_notes' => $data['invoice_note'],
-            'amount_in_PKR' => $data['amount_in_PKR'], // Assuming 1 USD = 280 PKR
-        ]);
-
-        // Delete old items and save new ones
-        $this->record->items()->delete();
-        
-        foreach ($data['items'] as $item) {
-            $quantity = (float) $item['quantity'];
-            $unitPrice = (float) $item['unit_price'];
-            $lineTotal = $quantity * $unitPrice;
-            
-            $this->record->items()->create([
-                'description' => $item['description'],
-                'quantity' => $quantity,
-                'unit_price' => $unitPrice,
-                'total' => $lineTotal,
+        try {
+            $this->record->update([
+                'customer_id' => $data['user_id'],
+                'company_name' => $data['company_name'],
+                'due_date' => $data['due_date'],
+                'address' => $data['client_address'],
+                'client_phone' => $data['client_phone'],
+                'client_email' => $data['client_email'],
+                'project_name' => $data['project_name'],
+                'client_currency' => $data['client_currency'],
+                'sub_total' => $this->subtotal,
+                'tax_rate' => $data['tax_rate'],
+                'tax_amount' => $this->tax_amount,
+                'total_amount' => $this->total,
+                'invoice_type' => $data['invoice_type'],
+                'paid_date_formatted' => $data['invoice_type'] == 'paid' ? $data['paid_date_formatted'] : null,
+                'inv_notes' => $data['invoice_note'] ?? '',
+                'amount_in_PKR' => $data['amount_in_PKR'], // Assuming 1 USD = 280 PKR
             ]);
-        }
-
-        Notification::make()
+    
+            // Delete old items and save new ones
+            $this->record->items()->delete();
+            
+            foreach ($data['items'] as $item) {
+                $quantity = (float) $item['quantity'];
+                $unitPrice = (float) $item['unit_price'];
+                $lineTotal = $quantity * $unitPrice;
+                
+                $this->record->items()->create([
+                    'description' => $item['description'],
+                    'quantity' => $quantity,
+                    'unit_price' => $unitPrice,
+                    'total' => $lineTotal,
+                ]);
+            }
+            Notification::make()
             ->title('Invoice updated successfully')
             ->success()
             ->send();
-            
-        $this->redirect('/invoices'); // Update this to match your route
+            $this->redirect('/invoices'); // Update this to match your route
+        } catch (\Throwable $th) {
+            \Log::error('Invoice update failed', [
+                'invoice_id' => $this->record->id,
+                'error' => $th->getMessage(),
+                'trace' => $th->getTraceAsString()
+            ]);
+
+            Notification::make()
+            ->title('Invoice Update Failed!')
+            ->danger()
+            ->send();
+        }
+
     }
 
     protected function getHeaderActions(): array
