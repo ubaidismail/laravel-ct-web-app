@@ -33,6 +33,9 @@ class AppServiceProvider extends ServiceProvider
         Auth::provider('dual-hash', function ($app, array $config) {
             return new DualHashUserProvider($app['hash'], $config['model']);
         });
+
+        
+
         FilamentColor::register([
             'danger' => Color::Rose,
             'gray' => Color::Gray,

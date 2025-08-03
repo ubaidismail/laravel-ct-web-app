@@ -39,7 +39,7 @@ class AdminPanelProvider extends PanelProvider
         ->darkModeBrandLogo(fn () => view('brand-darkMode'))
         ->favicon(asset('images/fav.png'))
             ->default()
-            ->id('')
+            ->id('admin')
             ->path('/')
             ->login()
             ->colors([
@@ -53,12 +53,17 @@ class AdminPanelProvider extends PanelProvider
             // ->registration(Register::class)
             ->pages([
                 // UsersList::class,
+                // \App\Filament\Pages\GenerateInsights::class,
+                
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
-                // Pages\Dashboard::class,
+                // UsersList::class,
+                // \App\Filament\Pages\GenerateInsights::class,
+                
             ])
+        
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
                 // Widgets\AccountWidget::class,
