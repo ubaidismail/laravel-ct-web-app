@@ -10,21 +10,22 @@ use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Filament\Support\Exceptions\Halt;
 use Illuminate\Support\Facades\Auth;
+use Filament\Forms\Components\FileUpload;
 
 class GenerateInsights extends Page
 {
     protected static ?string $navigationIcon = 'heroicon-o-sparkles';
-    
+
     protected static ?string $navigationLabel = 'Generate AI Insights';
-    
+
     protected static ?string $navigationGroup = 'Analytics';
-    
+
     protected static string $view = 'filament.pages.generate-insights';
 
     public ?array $data = [];
-    
+
     public ?array $generatedInsights = null;
-    
+
     public bool $isGenerating = false;
 
     public function mount(): void
@@ -50,7 +51,7 @@ class GenerateInsights extends Page
                             ->default('revenue_analysis')
                             ->required()
                             ->live(),
-                            
+
                         Forms\Components\Select::make('date_range')
                             ->label('Date Range')
                             ->options([
@@ -61,16 +62,22 @@ class GenerateInsights extends Page
                             ])
                             ->default('30_days')
                             ->required(),
-                            
+
                         Forms\Components\Placeholder::make('description')
-                            ->content(fn (Forms\Get $get): string => match ($get('type')) {
+                            ->content(fn(Forms\Get $get): string => match ($get('type')) {
                                 'revenue_analysis' => 'Analyze revenue trends, growth patterns, and identify opportunities to increase income.',
                                 'service_performance' => 'Evaluate which services are most profitable and identify optimization opportunities.',
                                 'customer_insights' => 'Understand customer behavior, segmentation, and retention patterns.',
                                 'forecast' => 'Generate revenue forecasts with confidence intervals and risk assessment.',
                                 default => 'Select an analysis type to see the description.'
                             }),
-                    ])
+                        // file option to import data as csv an
+                        FileUpload::make('add_your_csv_file')
+                            ->label('Add Your Preferred CSV File To Get Insights')
+                            ->acceptedFileTypes(['application/csv'])
+                            ->maxSize(1024)
+                            ->preserveFilenames()
+                    ]),
             ])
             ->statePath('data');
     }
@@ -79,9 +86,9 @@ class GenerateInsights extends Page
     {
         try {
             $this->isGenerating = true;
-            
+
             $data = $this->form->getState();
-            
+
             // Create report record
             $report = AIInsightReport::create([
                 'type' => $data['type'],
@@ -94,38 +101,37 @@ class GenerateInsights extends Page
             // Generate insights
             $aiService = app(AIInsightsService::class);
             $insights = $aiService->generateInsights($data['type'], $data['date_range']);
-            
+
             // Update report
             $report->update([
                 'data' => $insights,
                 'status' => 'completed'
             ]);
-            
+
             $this->generatedInsights = $insights;
             $this->isGenerating = false;
-            
+
             Notification::make()
                 ->title('Insights Generated Successfully')
                 ->success()
                 ->send();
-                
         } catch (\Exception $e) {
             $this->isGenerating = false;
-            
+
             if (isset($report)) {
                 $report->update(['status' => 'failed']);
             }
-            
+
             Notification::make()
                 ->title('Failed to Generate Insights')
                 ->body($e->getMessage())
                 ->danger()
                 ->send();
-                
+
             throw new \Exception($e->getMessage());
         }
     }
-    
+
     public function clearInsights(): void
     {
         $this->generatedInsights = null;

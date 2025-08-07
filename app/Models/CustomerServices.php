@@ -22,7 +22,7 @@ class CustomerServices extends Model
 
     public function user()
     {
-        return $this->belongsTo(Users::class, 'customer_id');
+        return $this->belongsTo(User::class, 'customer_id');
     }
     // In your app/Models/CustomerServices.php file
    

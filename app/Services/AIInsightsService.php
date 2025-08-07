@@ -13,8 +13,10 @@ class AIInsightsService
 
     public function __construct()
     {
-        $this->apiKey = config('services.gemini.key');
-        $this->apiUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent';
+        // $this->apiKey = config('services.gemini.key');
+        $this->apiKey = env('HUGGING_FACE_API');
+        // $this->apiUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent';
+        $this->apiUrl = 'https://router.huggingface.co/v1/chat/completions';
     }
 
     public function generateInsights(string $type, string $dateRange): array
@@ -27,7 +29,7 @@ class AIInsightsService
             $prompt = $this->buildPrompt($type, $data);
             
             // Step 3: Send to Gemini API
-            $insights = $this->callGemini($prompt);
+            $insights = $this->callOpenAICompatible($prompt);
             
             // Step 4: Structure the response
             return $this->formatInsights($insights, $type);
@@ -259,6 +261,7 @@ $dataString = json_encode($data, JSON_PRETTY_PRINT);
 
 private function callGemini(string $prompt): string
 {
+    
     $response = Http::timeout(30)->withHeaders([
         'Content-Type' => 'application/json',
     ])->post($this->apiUrl . '?key=' . $this->apiKey, [
@@ -287,10 +290,42 @@ private function callGemini(string $prompt): string
     throw new \Exception('Gemini API call failed: ' . $response->body());
 }
 
+private function callOpenAICompatible(string $prompt, bool $stream = false): string
+{
+    $response = Http::timeout(30)->withHeaders([
+        'Content-Type' => 'application/json',
+        'Authorization' => 'Bearer ' . $this->apiKey,
+    ])->post($this->apiUrl, [
+        'messages' => [
+            [
+                'role' => 'user',
+                'content' => $prompt
+            ]
+        ],
+        'model' => 'openai/gpt-oss-120b:novita',
+        'stream' => false,
+        'temperature' => 0.1,
+        'max_tokens' => 4096,
+        'top_p' => 0.95,
+    ]);
+
+    if ($response->successful()) {
+        $result = $response->json();
+        
+        if (isset($result['choices'][0]['message']['content'])) {
+            // dd($result['choices'][0]['message']['content']);
+            return $result['choices'][0]['message']['content'];
+        }
+    }
+
+    throw new \Exception('OpenAI-compatible API call failed: ' . $response->body());
+}
+
 private function formatInsights(string $rawInsights, string $type): array
 {
     // Clean up the response
-    $cleanedResponse = preg_replace('/```json\s*/', '', $rawInsights);
+    $cleanedResponse = preg_replace('/<think>.*?<\/think>/s', '', $rawInsights);    
+    $cleanedResponse = preg_replace('/```json\s*/', '', $cleanedResponse);
     $cleanedResponse = preg_replace('/```\s*$/', '', $cleanedResponse);
     $cleanedResponse = trim($cleanedResponse);
     

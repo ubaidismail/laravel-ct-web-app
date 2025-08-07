@@ -6,6 +6,7 @@ use App\Filament\Resources\InvoiceResource\Widgets\AnnualRevenue;
 use App\Filament\Resources\InvoiceResource\Widgets\RevenueChart;
 use App\Filament\Resources\InvoiceResource\Widgets\RevenueChartInPKR;
 use App\Filament\Widgets\NewCustomerCount;
+use App\Filament\Widgets\NewProspectCount;
 
 use Illuminate\Contracts\Support\Htmlable;
 
@@ -57,6 +58,7 @@ class Dashboard extends \Filament\Pages\Dashboard
             return [
 
                 NewCustomerCount::class,
+                NewProspectCount::class,
 
             ];
         }

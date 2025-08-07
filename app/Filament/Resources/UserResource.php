@@ -36,7 +36,8 @@ class UserResource extends Resource
                 Select::make('user_role')
                     ->options([
                         'admin' => 'Admin',
-                        'customer' => 'customer',
+                        'customer' => 'Customer',
+                        'prospect' => 'Prospect',
                         'manager' => 'Manager',
                         'employee' => 'Employee',
                         'tester' => 'Tester',
@@ -74,7 +75,18 @@ class UserResource extends Resource
                 TextColumn::make('id'),
                 TextColumn::make('name')->searchable(),
                 TextColumn::make('email')->searchable(),
-                TextColumn::make('user_role')->searchable(),
+                TextColumn::make('user_role')
+                ->badge()
+                ->color(function (string $state): string {
+                    if ($state === 'admin') {
+                        return 'danger';
+                    } elseif ($state === 'prospect') {
+                        return 'warning';
+                    }
+                
+                    return 'success';
+                })                
+                ->searchable(),
                 TextColumn::make('')->label('Login As')->getStateUsing(function (User $record) {
                     // return $record->name;
                 }),

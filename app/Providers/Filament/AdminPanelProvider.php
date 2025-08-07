@@ -26,6 +26,7 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use App\Filament\Widgets\NewCustomerCount;
+use App\Filament\Widgets\NewProspectCount;
 
 
 class AdminPanelProvider extends PanelProvider
@@ -68,6 +69,7 @@ class AdminPanelProvider extends PanelProvider
             ->widgets([
                 // Widgets\AccountWidget::class,
                 NewCustomerCount::class,
+                NewProspectCount::class,
                 RevenueChart::class,
                 RevenueChartInPKR::class,
                 AnnualRevenue::class,

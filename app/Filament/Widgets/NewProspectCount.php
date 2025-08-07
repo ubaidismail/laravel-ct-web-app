@@ -1,15 +1,14 @@
 <?php
-
 namespace App\Filament\Widgets;
 
 use App\Models\User;
 use Filament\Widgets\Widget;
 
-class NewCustomerCount extends Widget
+class NewProspectCount extends Widget
 {
-    protected static string $view = 'filament.widgets.new-customer-count';
+    protected static string $view = 'filament.widgets.new-prospect-count';
 
-    protected static ?string $heading = 'New Customers';
+    protected static ?string $heading = 'New Leads/Prospects';
 
     public function getViewData(): array
     {
@@ -22,9 +21,9 @@ class NewCustomerCount extends Widget
         $previousPeriodEnd = now()->subDays(30);
         
         // Get counts for both periods
-        $currentCustomers = User::where('user_role', 'customer')
+        $currentCustomers = User::where('user_role', 'prospect')
         ->whereBetween('created_at', [$currentPeriodStart, $currentPeriodEnd])->count();
-        $previousCustomers = User::where('user_role', 'customer')
+        $previousCustomers = User::where('user_role', 'prospect')
         ->whereBetween( 'created_at', [$previousPeriodStart, $previousPeriodEnd])->count();
         
         // Calculate percentage change
