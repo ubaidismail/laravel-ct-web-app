@@ -11,6 +11,8 @@ class UpworkProposalGenQueries extends Model
         'project_description',
         'portfolio',
         'AI_result',
+        'conversion_rate',
+        'AI_model',
         'error',
     ];
 

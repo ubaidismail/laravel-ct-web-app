@@ -17,7 +17,9 @@ use Filament\Forms\Components\TextInput;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Filament\Forms\Components\Hidden;
+use Filament\Forms\Components\Select;
 use Illuminate\Database\Eloquent\Model;
+
 
 class UpworkProposalGenQueriesResource extends Resource
 {
@@ -39,10 +41,20 @@ class UpworkProposalGenQueriesResource extends Resource
                     ->label('Project Description')
                     ->placeholder('Enter the project description here...')
                     ->required(),
-                Textarea::make('insert_your_portfolio')
+                Textarea::make('portfolio')
                     ->label('Add Portfolio or Links')
                     ->placeholder('Add Portfolio or Recent Projects Links Here')
                     ->required(),
+                Select::make('conversion_rate')
+                    ->label('Conversion Rate')
+                    ->options([
+                        'no-conversion' => 'No conversion',
+                        'interview-only' => 'Interviewed Only',
+                        'hired' => 'Hired'
+                    ])
+                    ->required()
+                    ->default('1'),
+
             ]);
     }
 
@@ -59,14 +71,24 @@ class UpworkProposalGenQueriesResource extends Resource
                     ->label('Project Description')
                     ->searchable()
                     ->limit(50),
-                   
+                Tables\Columns\TextColumn::make('conversion_rate')
+                ->label('Conversion Rate')
+                ->badge()
+                ->searchable()
+                ->color(fn (string $state): string => match ($state) {
+                    'no-conversion' => 'danger',
+                    'interview-only' => 'warning',
+                    'hired' => 'success',
+                    default => 'gray',
+                })
+                ->formatStateUsing(fn ($state) => ucfirst($state)),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Created At')
                     ->dateTime()
-                    ->sortable()
+                    ->sortable('DESC')
                     ->toggleable(isToggledHiddenByDefault: true),  
             ])
-            
+            ->defaultSort('created_at', 'desc')
             ->actions([
                 // Tables\Actions\EditAction::make(),
                 Tables\Actions\ActionGroup::make([
@@ -92,6 +114,7 @@ class UpworkProposalGenQueriesResource extends Resource
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);
+            
     }
 
     public static function canCreate(): bool
@@ -104,13 +127,13 @@ class UpworkProposalGenQueriesResource extends Resource
         return [
             'index' => Pages\ListUpworkProposalGenQueries::route('/'),
             // 'create' => Pages::route('/create'),
-            // 'edit' => Pages\EditUpworkProposalGenQueries::route('/{record}/edit'),
+            'edit' => Pages\EditUpworkProposalGenQueries::route('/{record}/edit'),
         ];
     }
     // disable edit
 
     public static function canEdit(Model $record): bool
     {
-        return false;
+        return true;
     }
 }

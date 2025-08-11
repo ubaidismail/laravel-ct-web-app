@@ -86,5 +86,6 @@ public function askWithContext(string $question, array $contextData): string
     }
     
     throw new \Exception('Llama API request failed: ' . $response->body());
+    
 }
 }

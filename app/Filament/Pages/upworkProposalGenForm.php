@@ -35,6 +35,17 @@ class UpworkProposalGenForm extends Page
         $this->user_id = (string) Auth::id();
     }
 
+    public function getBestPerformingProposals()
+    {
+        // get eleoquet table by best converstion rate
+        $proposals = UpworkProposalGenQueries::where('user_id', Auth::id())
+            ->where('conversion_rate', 'hired')
+            ->take(4)
+            ->get();
+        // dd($proposals);
+        return $proposals;
+    }
+
     public function form(Form $form): Form
     {
         return $form
@@ -59,22 +70,37 @@ class UpworkProposalGenForm extends Page
 
     public function create()
     {
-        
-        $get_ip = request()->ip(); // Get the user's IP address
 
+        $get_ip = request()->ip(); // Get the user's IP address
+        $bestProposals = $this->getBestPerformingProposals();
+        $examplesSection = "";
+        if ($bestProposals->isNotEmpty()) {
+            $examplesSection = "\n\nEXAMPLES OF SUCCESSFUL PROPOSALS:\n";
+            $examplesSection .= "Below are examples of proposals that resulted in successful hires. Use these as reference for style, structure, and approach:\n\n";
+
+            foreach ($bestProposals as $index => $proposal) {
+                $examplesSection .= "Example " . ($index + 1) . ":\n";
+                $examplesSection .= "Project: " . $proposal->project_description . "\n";
+                $examplesSection .= "Winning Proposal: " . $proposal->AI_result . "\n";
+                $examplesSection .= "---\n\n";
+            }
+
+            $examplesSection .= "Analyze these successful examples and incorporate similar patterns, tone, and approaches that made them effective.\n";
+        }
+        // dd($examplesSection);
         $key = 'proposal_gen_form_' . $get_ip;   // it creates a unique cache key per ip
 
         // 3 request per minute
-        if(RateLimiter::tooManyAttempts($key, 3)){
+        if (RateLimiter::tooManyAttempts($key, 3)) {
             $seconds = RateLimiter::availableIn($key);
             $minutes = ceil($seconds / 60);
 
             Notification::make()
-            ->title('Too Many Requests')
-            ->body("Please try again after {$minutes} minutes.")
-            ->danger()
-            ->persistent()
-            ->send();
+                ->title('Too Many Requests')
+                ->body("Please try again after {$minutes} minutes.")
+                ->danger()
+                ->persistent()
+                ->send();
 
             return;
         }
@@ -126,14 +152,17 @@ class UpworkProposalGenForm extends Page
         9. Use the standard and human tone,
 
         DO NOT:
-        - Include pricing information
+        - Include pricing information if not instructed by the client
         - Include Please feel free to contact me via email, phone, or Upwork messaging to schedule a call and discuss your project in more detail.
         - Use generic phrases like \"I'm excited about your project\"
         - Overpromise with phrases like \"I can deliver perfect results\"
         - List your entire work history or irrelevant skills
         - Copy and paste template language that lacks personalization
         - Use excessive technical jargon without explanation
-        - Write excessively long proposals (stay under 300 words)";
+        - Write excessively long proposals (stay under 300 words)
+        - Follow the folloiwng sample proposal that got me hired 
+        
+        $examplesSection";
 
         try {
             // rate limit 3 request per minute
@@ -173,7 +202,17 @@ class UpworkProposalGenForm extends Page
 
             $this->saveData();
         } catch (\Exception $e) {
-            $this->result = "Exception: " . $e->getMessage();
+            // $this->result = "Exception: " . $e->getMessage();
+
+            \Log::error('Error retrieving data', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+            Notification::make()
+                ->title('Failed to retrieve proposal')
+                ->body('Please try again.')
+                ->danger()
+                ->send();
         }
     }
 

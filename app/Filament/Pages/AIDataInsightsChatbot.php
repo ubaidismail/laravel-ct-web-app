@@ -13,9 +13,7 @@ use Filament\Forms\Components\Section;
 use Filament\Forms\Form;
 use Filament\Pages\Page;
 use Filament\Actions\Action;
-use Illuminate\Support\Facades\DB;
-use PhpParser\Node\Expr\Cast\Object_;
-
+use Filament\Notifications\Notification;
 
 class AIDataInsightsChatbot extends Page
 {
@@ -75,7 +73,17 @@ class AIDataInsightsChatbot extends Page
             $geminiService = app(AIChatInshights::class);
             $this->response = $geminiService->askWithContext($this->question, $contextData);
         } catch (\Exception $e) {
-            $this->response = 'Sorry, there was an error processing your request: ' . $e->getMessage();
+            \Log::error('Sorry, there was an error processing your request:', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            Notification::make()
+            ->title('Error')
+            ->body('Sorry, there was an error processing your request')
+            ->danger()
+            ->send();
+
         } finally {
             $this->loading = false;
         }
@@ -135,13 +143,16 @@ class AIDataInsightsChatbot extends Page
         try {
             return User::get()->toArray();
         } catch (\Exception $e) {
-            // return [
-            //     ['segment' => 'Enterprise', 'customer_count' => 150, 'avg_spent' => 5000],
-            //     ['segment' => 'SMB', 'customer_count' => 300, 'avg_spent' => 1200],
-            //     ['segment' => 'Startup', 'customer_count' => 80, 'avg_spent' => 500],
-            // ];
-            return [
+            \Log::error('Error retrieving data',[
                 'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+            return [ 
+                Notification::make()
+                ->title('Failed to retrieve data')
+                ->body('Please check your input and try again.')
+                ->danger()
+                ->send(),
             ];
         }
     }
@@ -182,8 +193,16 @@ class AIDataInsightsChatbot extends Page
             //     ['country' => 'Pakistan', 'city' => 'Lahore', 'customer_count' => 150, 'total_revenue' => 300000],
             //     ['country' => 'UAE', 'city' => 'Dubai', 'customer_count' => 100, 'total_revenue' => 250000],
             // ];
-            return [
+            \Log::error('Error retrieving data',[
                 'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+            return [ 
+                Notification::make()
+                ->title('Failed to retrieve data')
+                ->body('Please check your input and try again.')
+                ->danger()
+                ->send(),
             ];
         }
     }

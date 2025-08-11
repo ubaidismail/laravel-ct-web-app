@@ -305,7 +305,7 @@ private function callOpenAICompatible(string $prompt, bool $stream = false): str
         'model' => 'openai/gpt-oss-120b:novita',
         'stream' => false,
         'temperature' => 0.1,
-        'max_tokens' => 4096,
+        'max_tokens' => 4096, 
         'top_p' => 0.95,
     ]);
 
