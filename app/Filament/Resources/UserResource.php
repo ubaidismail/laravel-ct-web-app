@@ -23,10 +23,11 @@ class UserResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-users';
 
-   public static function shouldRegisterNavigation(): bool {
-    return auth()->user() && auth()->user()->user_role === 'admin';
-   }
-    
+    public static function shouldRegisterNavigation(): bool
+    {
+        return auth()->user() && auth()->user()->user_role === 'admin';
+    }
+
     public static function form(Form $form): Form
     {
         return $form
@@ -57,14 +58,29 @@ class UserResource extends Resource
                 TextInput::make('company')->required(),
                 TextInput::make('pass_for_admin_view')->required(),
                 TextInput::make('total_amount_paid')->numeric(true)
-                ->default('0')
-                ->step(0.01)
-                ->placeholder('Enter amount paid'),
+                    ->default('0')
+                    ->step(0.01)
+                    ->placeholder('Enter amount paid'),
+
                 TextInput::make('password')
-                    ->password()
                     ->required()
                     ->dehydrateStateUsing(fn($state) => bcrypt($state))
-                    ->visibleOn('create'),
+                    ->visibleOn(['create', 'edit'])
+                    ->password()
+                    ->extraFieldWrapperAttributes([
+                        'x-data' => '{ show: false }',
+                    ])
+                    ->extraInputAttributes([
+                        'x-bind:type' => 'show ? "text" : "password"',
+                    ])
+                    ->suffixAction(
+                        \Filament\Forms\Components\Actions\Action::make('togglePasswordVisibility')
+                            ->icon('heroicon-o-eye')
+                            ->extraAttributes([
+                                'x-on:click' => 'show = !show',
+                            ])
+                            ->color('gray')
+                    ),
             ]);
     }
 
@@ -76,20 +92,20 @@ class UserResource extends Resource
                 TextColumn::make('name')->searchable(),
                 TextColumn::make('email')->searchable(),
                 TextColumn::make('user_role')
-                ->badge()
-                ->color(function (string $state): string {
-                    if ($state === 'admin') {
-                        return 'danger';
-                    } elseif ($state === 'prospect') {
-                        return 'warning';
-                    }
-                
-                    return 'success';
-                })                
-                ->searchable(),
-                TextColumn::make('')->label('Login As')->getStateUsing(function (User $record) {
-                    // return $record->name;
-                }),
+                    ->badge()
+                    ->color(function (string $state): string {
+                        if ($state === 'admin') {
+                            return 'danger';
+                        } elseif ($state === 'prospect') {
+                            return 'warning';
+                        }
+
+                        return 'success';
+                    })
+                    ->searchable(),
+                // TextColumn::make('')->label('Login As')->getStateUsing(function (User $record) {
+                //     // return $record->name;
+                // }),
                 TextColumn::make('created_at')->date()->sortable(),
             ])
             ->filters([
@@ -97,10 +113,10 @@ class UserResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make('Edit'),
-    
+
                 Tables\Actions\DeleteAction::make('delete')
-                ->requiresConfirmation()
-                ->action(fn (User $record) => $record->delete())
+                    ->requiresConfirmation()
+                    ->action(fn(User $record) => $record->delete())
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -116,7 +132,7 @@ class UserResource extends Resource
             //
         ];
     }
-    
+
     public static function getPages(): array
     {
         return [

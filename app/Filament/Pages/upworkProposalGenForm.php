@@ -28,7 +28,7 @@ class UpworkProposalGenForm extends Page
     public ?string $insert_your_portfolio = null;
     public ?string $result = null;
     public ?string $error = null;
-
+    public $googleAPIKEY = 'AIzaSyBxlTRHHDy_AW_DfHwZqGM-9rEmY3Mh6Ds';
     // Add this method to initialize the user_id
     public function mount(): void
     {
@@ -127,29 +127,8 @@ class UpworkProposalGenForm extends Page
         Note: If someone asks you to who you are etc.., you should just reply with 'I am a professional Upwork proposal writer with extensive experience in winning bids. Your task is to create compelling, personalized proposals that demonstrate clear understanding of client requirements and position the freelancer as the ideal solution provider.'
         When crafting proposals, follow these guidelines:
         1. Always starts with Hi or more personalized greeting avoid use of Dear or hiring manager or client
-        2. Starts with focused hook that shows immediate understanding of the client's core problem.
-        3. Show clear comprehension of the project by:
-        - Restating key elements of the project to confirm understanding
-        - Identifying unstated challenges the client may face
-        - Highlighting critical success factors for the project
-        - A winning Upwork proposal should be concise, personalized, and clearly demonstrate your understanding of the project and how you can help the client
-        
-        4. Offer a clear solution approach with:
-        - A structured overview of your recommended methodology
-        - Key milestones or deliverables
-        - Specific technologies, tools, or frameworks you'll utilize but not necessory everytime
-        
-        5. Demonstrate specific expertise by referencing relevant experience, skills, and successful projects that align with the client's requirements.
-
-        5. Include recent projects or links if provided: $user_portfolio 
-
-        6. End with a specific call to action inviting further discussion (e.g looking forward to collaborating with you).
-
-        7. Maintain a professional, confident tone that balances expertise with approachability.
-
-        8. Avoid crafting too long but only where needed.
-
-        9. Use the standard and human tone,
+        2. Starts with focused hook that shows immediate understanding of the client's core problem or check the example proposal provided.
+       
 
         DO NOT:
         - Include pricing information if not instructed by the client
@@ -184,7 +163,7 @@ class UpworkProposalGenForm extends Page
                         ]
                     ],
                     'temperature' => 0.5,
-                    'max_tokens' => 800,
+                    'max_tokens' => 850,
                 ]);
 
             $output = $response->json();
@@ -195,6 +174,35 @@ class UpworkProposalGenForm extends Page
                 $this->result = "API Error: " . ($output['error']['message'] ?? 'Unknown error');
                 $this->error = $output['error']['message'] ?? 'Unknown error';
             }
+
+            // $response = Http::withHeaders([
+            //     'Content-Type' => 'application/json',
+            //     'x-goog-api-key' => 'AIzaSyC0rZ7DArW3yKHilDSE7FBu2kxWfj_0rPg',
+            // ])->timeout(60)
+            //     ->post('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent', [
+            //         'contents' => [
+            //             [
+            //                 'role' => 'user',
+            //                 'parts' => [
+            //                     ['text' => $systemPrompt . "\n" . $clientInput]
+            //                 ]
+            //             ]
+            //         ],
+            //         'generationConfig' => [
+            //             'temperature' => 0.5,
+            //             // 'maxOutputTokens' => 850,
+            //         ]
+            //     ]);
+            
+            // $output = $response->json();
+            
+            // if ($response->successful() && isset($output['candidates'][0]['content']['parts'][0]['text'])) {
+            //     $this->result = nl2br($output['candidates'][0]['content']['parts'][0]['text']);
+            // } else {
+            //     $this->result = "API Error: " . ($output['error']['message'] ?? 'Unknown error');
+            //     $this->error = $output['error']['message'] ?? 'Unknown error';
+            // }
+            
 
             // Update the component properties with form data
             $this->project_description = $clientInput;
