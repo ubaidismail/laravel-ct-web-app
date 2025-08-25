@@ -128,6 +128,7 @@ class CreateInvoice extends Page implements Forms\Contracts\HasForms
                         'pending' => 'Pending',
                         'paid' => 'Paid',
                         'overdue' => 'Overdue',
+                        'draft' => 'Draft',
                     ])
                     ->default('pending')
                     ->required()

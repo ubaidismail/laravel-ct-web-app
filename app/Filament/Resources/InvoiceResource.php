@@ -17,7 +17,7 @@ use Filament\Tables\Columns\TextColumn;
 use Illuminate\Support\HtmlString;
 use Filament\Support\Enums\FontWeight;
 use Carbon\Carbon;
-use Filament\Tables\Actions;
+
 
 
 
@@ -58,7 +58,7 @@ class InvoiceResource extends Resource
                 TextColumn::make('address'),
                 TextColumn::make('invoice_type')->label('Invoice Type')
                     ->searchable()
-                    ->color(fn($state) => $state === 'pending' ? 'danger' : 'success')
+                    ->color(fn($state) => $state == 'pending' || $state == 'overdue' ? 'danger' : ($state == 'draft'? 'warning': 'success') )
                     ->weight(FontWeight::Bold)
                     ->badge()
                     ->formatStateUsing(fn($state) => ucwords($state)),
@@ -82,6 +82,16 @@ class InvoiceResource extends Resource
                 //
             ])
             ->actions([
+                // duplicate invoice
+                // do not add duplicate to draft mails
+                Tables\Actions\Action::make('duplicate')
+                    ->icon('heroicon-o-document-duplicate')
+                    ->action(fn(invoices $record) => $record->duplicate())
+                    ->requiresConfirmation()
+                    ->color('success')
+                    ->label('Duplicate')
+                    ->visible(fn(invoices $record) => $record->invoice_type !== 'draft'),
+                    
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make('delete')
                     ->requiresConfirmation()
@@ -121,4 +131,6 @@ class InvoiceResource extends Resource
             
         ];
     }
+
+
 }

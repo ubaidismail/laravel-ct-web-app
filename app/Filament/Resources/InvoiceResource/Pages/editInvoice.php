@@ -127,8 +127,7 @@ class EditInvoice extends Page implements Forms\Contracts\HasForms
 
                 TextInput::make('client_phone')
                     ->label('Phone'),
-                    // ->disabled()
-                    // ->dehydrated(),
+
 
                 TextInput::make('client_email')
                     ->label('Email')
@@ -143,7 +142,7 @@ class EditInvoice extends Page implements Forms\Contracts\HasForms
                 TextInput::make('project_name')
                     ->label('Project Name')
                     ->default(fn () => $this->project_name)  //get value from db
-                    // ->dehydrated(),
+
             ]),
             
             Grid::make(2)->schema([
@@ -153,6 +152,7 @@ class EditInvoice extends Page implements Forms\Contracts\HasForms
                         'pending' => 'Pending',
                         'paid' => 'Paid',
                         'overdue' => 'Overdue',
+                        'draft' => 'Draft',
                     ])
                     ->default('pending')
                     ->required()
