@@ -44,7 +44,8 @@ class UserResource extends Resource
                         'tester' => 'Tester',
                     ])
                     ->required()->placeholder('Select User Role'),
-                TextInput::make('phone')->required(),
+                TextInput::make('phone')->required()
+                ->maxLength(14),
                 TextInput::make('address')->required(),
                 TextInput::make('project')->required(),
                 Select::make('currency')

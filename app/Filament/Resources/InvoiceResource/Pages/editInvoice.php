@@ -122,7 +122,7 @@ class EditInvoice extends Page implements Forms\Contracts\HasForms
 
                 TextInput::make('client_address')
                     ->label('Address')
-                    ->disabled()
+                    // ->disabled()
                     ->dehydrated(),
 
                 TextInput::make('client_phone')
@@ -131,7 +131,7 @@ class EditInvoice extends Page implements Forms\Contracts\HasForms
 
                 TextInput::make('client_email')
                     ->label('Email')
-                    ->disabled()
+                    // ->disabled()
                     ->dehydrated(),
 
                 TextInput::make('client_currency')
@@ -160,6 +160,8 @@ class EditInvoice extends Page implements Forms\Contracts\HasForms
 
                 DatePicker::make('paid_date_formatted')
                     ->label('Paid Date')
+                    // required if invoice type is paid
+                    ->required(fn ($get) => $get('invoice_type') == 'paid'),
                 
             ]),
             
@@ -199,7 +201,9 @@ class EditInvoice extends Page implements Forms\Contracts\HasForms
                 Grid::make(2)->schema([
                     TextInput::make('tax_rate')
                         ->label('Tax Rate (%)')
+                        // can be decimal or whole number
                         ->numeric()
+                        ->step(0.01)
                         ->default(0)
                         ->live(onBlur: true)
                         ->afterStateUpdated(fn () => $this->calculateTotals()),
@@ -239,7 +243,7 @@ class EditInvoice extends Page implements Forms\Contracts\HasForms
     {
         $formData = $this->form->getState();
         $items = $formData['items'] ?? [];
-        $taxRate = (float) ($formData['tax_rate'] ?? 0);
+        $taxRate = ($formData['tax_rate'] ?? 0);
         
         $subtotal = 0;
         

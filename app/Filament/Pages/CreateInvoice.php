@@ -12,7 +12,7 @@ use App\Models\User;
 use Filament\Forms\Form;
 use Filament\Actions\Action;
 use Filament\Notifications\Notification;
-
+use Illuminate\Database\Eloquent\Builder;
 
 
 class CreateInvoice extends Page implements Forms\Contracts\HasForms
@@ -38,6 +38,7 @@ class CreateInvoice extends Page implements Forms\Contracts\HasForms
     public $invoice_type = 0;
     public $invoice_note = '';
     public $amount_in_PKR = 0;
+    public $paid_date_formatted = null;
 
 
 
@@ -67,7 +68,7 @@ class CreateInvoice extends Page implements Forms\Contracts\HasForms
             Grid::make(2)->schema([
                 Select::make('user_id')
                     ->label('Invoice To')
-                    ->options(fn() => User::pluck('name', 'id'))
+                    ->options(fn() => User::orderBy('id', 'desc')->pluck('name', 'id'))
                     ->searchable()
                     ->required()
                     ->placeholder('Select a user')
@@ -132,9 +133,26 @@ class CreateInvoice extends Page implements Forms\Contracts\HasForms
                     ])
                     ->default('pending')
                     ->required()
-                    ->placeholder('Select Invoice Type'),
+                    ->placeholder('Select Invoice Type')
+                    ->live(),
+
+                    DatePicker::make('paid_date_formatted')
+                    ->label('Paid Date')
+                    ->required(fn($get) => $get('invoice_type') === 'paid')
+                    ->disabled(fn($get) => $get('invoice_type') !== 'paid')
+                    ->visible(fn($get) => $get('invoice_type') === 'paid')
+                    ->live()
+                    ->afterStateUpdated(function ($state, $set, $get) {
+                        // Auto-set paid date to today if invoice type is paid and no date is set
+                        if ($get('invoice_type') === 'paid' && !$state) {
+                            $set('paid_date_formatted', now()->format('Y-m-d'));
+                        }
+                    })
+
+
                 
             ]),
+            
             
             Repeater::make('items')
             ->label('Invoice Items')
@@ -175,6 +193,7 @@ class CreateInvoice extends Page implements Forms\Contracts\HasForms
                     TextInput::make('tax_rate')
                         ->label('Tax Rate (%)')
                         ->numeric()
+                        ->step(0.01)
                         ->default(0)
                         ->live(onBlur: true)
                         ->afterStateUpdated(fn () => $this->calculateTotals()),
@@ -213,7 +232,7 @@ class CreateInvoice extends Page implements Forms\Contracts\HasForms
     {
         $formData = $this->form->getState();
         $items = $formData['items'] ?? [];
-        $taxRate = (float) ($formData['tax_rate'] ?? 0);
+        $taxRate = ($formData['tax_rate'] ?? 0);
         
         $subtotal = 0;
         
@@ -252,8 +271,8 @@ class CreateInvoice extends Page implements Forms\Contracts\HasForms
             'tax_amount' => $this->tax_amount,
             'total_amount' => $this->total,
             'invoice_type' => $data['invoice_type'],
+            'paid_date_formatted' => $data['invoice_type'] == 'paid' ? $data['paid_date_formatted'] : null,
             'amount_in_PKR' => $this->amount_in_PKR,
-            'paid_date' => $data['invoice_type'] === 'paid' ? now() : '',
             'inv_notes' => $data['invoice_note'] == '' ? '' : $data['invoice_note'],
         ]);
 

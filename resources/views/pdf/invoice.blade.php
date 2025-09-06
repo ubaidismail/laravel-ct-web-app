@@ -48,6 +48,7 @@
             margin-top: 30px;
             opacity: 0.6;
         }
+        
     </style>
 </head>
 <body>
@@ -61,7 +62,7 @@
     <div class="header">
         <div class="flex_div">
             <div class="left_head_meta">
-                <img src="{{ public_path('images/logo.png') }}" alt="Logo" style="width: 150px; height: auto;">
+                <img src="{{ public_path('images/logo.png') }}" alt="Logo" style="width: 250px; height: auto;">
                 <div class="details">
                     <h4>Billed To:</h4>
                     <p>Name: {{ $invoice->company_name }}</p>
@@ -130,10 +131,11 @@
             <td class="right"><strong>Subtotal:</strong></td>
             <td class="right">$ {{ number_format($invoice->sub_total, 2) }}</td>
         </tr>
+       
         <tr>
-            <td class="right"><strong>Tax amount:</strong></td>
+            <td class="right"><strong>Tax Amount:</strong></td>
             <td class="right">
-                $ {{($invoice->tax_amount == '' ? ' 0.00' : $invoice->tax_amount) }}
+            $ {{ $invoice->tax_amount === '' ? '0.00' : number_format($invoice->tax_amount, 2) }}
             </td>
             
         </tr>
@@ -167,11 +169,19 @@
         @endphp
         @endif
 
-
+        @if($invoice->invoice_type == 'pending')
         <p><strong>Payment Terms:</strong> Net 5 of the invoice date.</p>
         <p>A late fee of 1.5% after 10 days will be applied to overdue balances.</p>
         <p>Payments can be made via bank transfer, Wise, Payoneer, or credit card.</p>
         <p>If you have any questions regarding this invoice, please contact us.</p>
+        @endif
+        
+        
     </div>
+    <footer>
+    <div style="margin-top: 40px; border-top: 1px solid #ddd; padding-top: 20px;">
+            <p> © @php echo date('Y'); @endphp  CloudTach, 1001 South Main St, Ste 500, Montana, MT 59901, USA</p>
+        </div>
+    </footer>
 </body>
 </html>
