@@ -24,6 +24,7 @@ class CompanyServicesResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     protected static ?string $navigationLabel = 'Company Services';
     protected static ?string $label = 'Company Service';
+    protected static ?string $navigationGroup = 'Company';
 
     public static function shouldRegisterNavigation(): bool {
         return auth()->user() && auth()->user()->user_role === 'admin';

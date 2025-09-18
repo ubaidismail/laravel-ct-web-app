@@ -28,6 +28,15 @@ class invoices extends Model
         'amount_in_PKR',
     ];
 
+    protected $casts = [
+        'paid_date_formatted' => 'datetime',
+        'total_amount' => 'decimal:2',
+        'tax_amount' => 'decimal:2',
+        'sub_total' => 'decimal:2',
+        'shipping_cost' => 'decimal:2',
+        'status' => 'integer',
+    ];
+
     public function user()
     {
         return $this->belongsTo(User::class);

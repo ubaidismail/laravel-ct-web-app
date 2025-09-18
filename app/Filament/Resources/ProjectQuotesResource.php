@@ -23,6 +23,7 @@ class ProjectQuotesResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     protected static ?string $navigationLabel = 'New Project Quotations';
+    protected static ?string $navigationGroup = 'Company';
 
     public static function form(Form $form): Form
     {

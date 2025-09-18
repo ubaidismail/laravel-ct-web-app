@@ -26,6 +26,8 @@ class ReferralRewardPointResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     protected static ?string $navigationLabel = 'Referral Reward Points';
     protected static ?string $label = 'Referral Reward Point';
+    protected static ?string $navigationGroup = 'Company';
+    
     public static function form(Form $form): Form
     {
         return $form

@@ -7,6 +7,8 @@ use App\Filament\Resources\InvoiceResource\Widgets\RevenueChart;
 use App\Filament\Resources\InvoiceResource\Widgets\RevenueChartInPKR;
 use App\Filament\Widgets\NewCustomerCount;
 use App\Filament\Widgets\NewProspectCount;
+use App\Filament\Widgets\SalesProgress;
+
 
 use Illuminate\Contracts\Support\Htmlable;
 
@@ -52,14 +54,11 @@ class Dashboard extends \Filament\Pages\Dashboard
     }
     public function getWidgets(): array
     {
-        // user isrole is not admin
-        // auth()->user() && auth()->user()->user_role === 'admin   
         if (auth()->user() && auth()->user()->user_role === 'admin') {
             return [
-
+                SalesProgress::class,
                 NewCustomerCount::class,
                 NewProspectCount::class,
-
             ];
         }
     }
