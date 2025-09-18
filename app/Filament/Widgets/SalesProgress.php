@@ -48,7 +48,7 @@ class SalesProgress extends Widget
             return 0;
         }
         
-        return min(($sales / $target) * 100, 100);
+        return number_format(min(($sales / $target) * 100, 100) , 2);
     }
     
     public function getProgressColor(): string
