@@ -59,8 +59,6 @@
             <div class="left_head_meta">
                 <img src="{{ public_path('images/logo.png') }}" alt="Logo" style="width: 250px; height: auto;">
                 <div class="details">
-                    <h4>Billed From:</h4>
-                    <P>Name: UBAIDULLAH</P>
                     <h4>Billed To:</h4>
                     <p>Name: {{ $invoice->company_name }}</p>
                     <p>Address: {{ $invoice->address }}</p>
