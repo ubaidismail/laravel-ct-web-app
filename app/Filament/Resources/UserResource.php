@@ -15,7 +15,8 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\Select;
-
+use Illuminate\Support\Facades\Date;
+use Filament\Forms\Components\DatePicker;
 
 class UserResource extends Resource
 {
@@ -43,11 +44,44 @@ class UserResource extends Resource
                         'employee' => 'Employee',
                         'tester' => 'Tester',
                     ])
-                    ->required()->placeholder('Select User Role'),
+                    ->required()->placeholder('Select User Role')
+                    ->live(),
+
+                    Select::make('employee_status')
+                    ->options([
+                        'active' => 'Active',
+                        'probation' => 'Probation',
+                        'notice_period' => 'Notice Period',
+                        'contract' => 'Contract',
+                        'intern' => 'Intern',
+                        'trainee' => 'Trainee',
+                        'on_leave' => 'On Leave',
+                        'unpaid_leave' => 'Unpaid Leave',
+                        'laid_off' => 'Laid Off',
+                        'contract_ended' => 'Contract Ended',
+                        'resigned' => 'Resigned',
+                        'terminated' => 'Terminated',
+                        'absconded' => 'Absconded',
+                        'retired' => 'Retired',
+                        'deceased' => 'Deceased',
+                        
+                    ])
+                    ->required()->placeholder('Select Employee Status')
+                    ->visible(fn($get) => $get('user_role') === 'employee'),
+                    
+                DatePicker::make('employment_start_date')->required()
+                    ->visible(fn($get) => $get('user_role') === 'employee'),
+
+                DatePicker::make('employment_end_date')
+                    ->visible(fn($get) => $get('user_role') === 'employee'),
+
                 TextInput::make('phone')->required()
-                ->maxLength(14),
+                    ->maxLength(14),
                 TextInput::make('address')->required(),
-                TextInput::make('project')->required(),
+
+                TextInput::make('project')->required(fn($get) => $get('user_role') !== 'employee')
+                    ->default('N/A')
+                    ->disabled(fn($get) => $get('user_role') === 'employee'),
                 Select::make('currency')
                     ->options([
                         '$' => 'USD',
@@ -58,10 +92,19 @@ class UserResource extends Resource
                     ->placeholder('Select currency'),
                 TextInput::make('company')->required(),
                 TextInput::make('pass_for_admin_view')->required(),
+                
+                TextInput::make('current_salary')->numeric(true)
+                    ->hint('Employee only')
+                    ->default('0')
+                    ->step(0.01)
+                    ->placeholder('Enter amount')
+                    ->visible(fn($get) => $get('user_role') === 'employee'),   
+
                 TextInput::make('total_amount_paid')->numeric(true)
                     ->default('0')
                     ->step(0.01)
-                    ->placeholder('Enter amount paid'),
+                    ->placeholder('Enter amount paid')
+                    ->disabled(fn($get) => $get('user_role') === 'employee'),
 
                 TextInput::make('password')
                     ->required()
