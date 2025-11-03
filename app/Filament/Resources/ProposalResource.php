@@ -234,7 +234,7 @@ class ProposalResource extends Resource
                 Tables\Actions\ViewAction::make()
                     ->url(fn($record): string => static::getUrl('sign-proposal', ['record' => $record])),
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\deleteAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
