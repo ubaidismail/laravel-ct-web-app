@@ -9,6 +9,7 @@ use App\Filament\Resources\InvoiceResource\Widgets\RevenueChartInPKR;
 use App\Filament\Resources\InvoiceResource\Widgets\AnnualRevenue;
 use App\Models\User;
 use Filament\Http\Middleware\Authenticate;
+use App\Http\Middleware\AuthenticatePublicProposal;
 
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -40,6 +41,7 @@ class AdminPanelProvider extends PanelProvider
        
         ->brandLogo(fn () => view('brand'))
         ->darkModeBrandLogo(fn () => view('brand-darkMode'))
+        
         ->favicon(asset('images/fav.png'))
             ->default()
             ->id('admin')
@@ -53,6 +55,7 @@ class AdminPanelProvider extends PanelProvider
                 'success' => Color::Emerald,
                 'warning' => Color::Orange,
             ])
+    
             // ->registration(Register::class)
             ->pages([
                 // UsersList::class,
@@ -86,7 +89,7 @@ class AdminPanelProvider extends PanelProvider
                 DispatchServingFilamentEvent::class,
             ])
             ->authMiddleware([
-                Authenticate::class,
+                AuthenticatePublicProposal::class,
                 \App\Http\Middleware\CheckUserRole::class . ':admin', // Apply the role check middleware for admin
             ])
             ;

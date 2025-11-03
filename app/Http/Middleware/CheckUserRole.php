@@ -16,6 +16,13 @@ class CheckUserRole
      */
     public function handle(Request $request, Closure $next, string $role): Response
     {
+        // Allow sign-proposal route to be accessed without authentication
+        if ($request->routeIs('filament.admin.resources.proposals.sign-proposal') || 
+            $request->path() === 'proposals/{record}/sign-proposal' ||
+            str_contains($request->path(), 'sign-proposal')) {
+            return $next($request);
+        }
+
         if (!Auth::check()) {
             return redirect()->route('filament.auth.login');
         }
