@@ -14,11 +14,18 @@ class ProposalBuilder extends Page
 
     protected static string $view = 'filament.resources.proposal-resource.pages.proposal-builder';
 
-    protected static ?string $title = 'Proposal Builder';
-
     public ?Proposals $record = null;
-    
-    // #[Validate('required|min:2|max:255', message: 'Please enter your name to sign the proposal.')]
+    public function getTitle(): string
+    {
+        // Access the record and return dynamic title
+        return $this->record->proposal_name ?? 'Review and Sign the Proposal';
+
+        // Or combine static text with dynamic:
+        // return 'Proposal: ' . $this->record->proposal_name;
+
+        // Or with more formatting:
+        // return $this->record->proposal_name . ' - Review & Sign';
+    }
     public $clientSignature = '';
 
 
@@ -26,7 +33,7 @@ class ProposalBuilder extends Page
     {
         // Test if this even gets called
         // dd('Method called!', $this->clientSignature);
-        
+
         $this->validate([
             'clientSignature' => 'required|string|max:255',
         ]);
@@ -43,7 +50,6 @@ class ProposalBuilder extends Page
                 ->send();
 
             $this->clientSignature = '';
-            
         } catch (\Exception $e) {
             Notification::make()
                 ->title('Error')
@@ -59,7 +65,7 @@ class ProposalBuilder extends Page
         }
         return parent::getLayout();
     }
-    
+
     public static function canView(): bool
     {
         return true;
@@ -74,6 +80,4 @@ class ProposalBuilder extends Page
     {
         return [];
     }
-
-    
 }
