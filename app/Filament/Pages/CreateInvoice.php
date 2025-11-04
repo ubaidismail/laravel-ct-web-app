@@ -297,7 +297,7 @@ class CreateInvoice extends Page implements Forms\Contracts\HasForms
             $this->redirect('/invoices'); // Update this to match your route
         } catch (\Throwable $th) {
             \Log::error('Invoice update failed', [
-                'invoice_id' => $this->record->id,
+                // 'invoice_id' => $this->record->id,
                 'error' => $th->getMessage(),
                 'trace' => $th->getTraceAsString()
             ]);
