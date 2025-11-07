@@ -12,6 +12,7 @@ class ProposalPricingQuote extends Model
     protected $fillable = [
         'proposal_id',
         'services',
+        'timeline',
         'quantity',
         'unit_price',
         'total',

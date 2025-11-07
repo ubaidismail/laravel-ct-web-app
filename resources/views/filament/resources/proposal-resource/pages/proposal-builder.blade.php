@@ -478,7 +478,7 @@
             }
         }
     </style>
-    <div class="space-y-6">
+    <div id="desktop-message" class="space-y-6">
         <div class="flex min-h-screen w-100">
             <div class="with-main-bg"
                 style="background-image: url('{{ asset('images/proposal-main.jpg') }}'); ">
@@ -552,6 +552,112 @@
                 </div>
             </div>
         </div>
+
+
+        <!-- project details -->
+        <div class="flex min-h-screen w-100">
+            <div class="with-main-bg"
+                style="background-image: url('{{ asset('images/proposal-main.jpg') }}'); ">
+                <div class="inner-container">
+
+                    <div class="flex flex-col lg:flex-row">
+                        <div class="hidden lg:block lg:w-full"></div>
+                        <div class="w-full">
+                            <div class="right-area-dev text-right lg:text-right text-left mt-6 mb-4">
+                                <h3 class="intro"> OBJECTIVE</h3>
+                                {!! $record->objective !!}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="content-right-start abt_company">
+                        <div class="company-info dev_process ">
+                            <h3 class="font-bold text-2xl lg:text-3xl mb-4">PROJECT SCOPE</h3>
+                           {!! $record->project_description !!}
+                            
+
+                        </div>
+                    </div>
+                    <!-- </div> -->
+                    <!-- </div> -->
+
+                    <div class="bottom-area-fixed">
+                        <p>CLOUDTACH</p>
+                        <p>1001 South Main Street, Montana, MT 59901</p>
+                        <p>info@cloudtach.com - www.cloudtach.com</p>
+
+                        <div class="bb_dotted"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- project details with pricing -->
+        <div class="flex min-h-screen w-100">
+            <div class="with-main-bg"
+                style="background-image: url('{{ asset('images/proposal-main.jpg') }}'); ">
+                <div class="inner-container">
+
+                    <div class="flex flex-col lg:flex-row">
+                        <div class="hidden lg:block lg:w-full"></div>
+                        <div class="w-full">
+                            <div class="right-area-dev text-right lg:text-right text-left mt-6 mb-4">
+                                <h3 class="intro"> PROJECT DETAILS</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="content-right-start abt_company">
+                        <div class="company-info dev_process ">
+                            <h3 class="font-bold text-2xl lg:text-3xl mb-4">Pricing And Timeline</h3>
+                            <div class="overflow-x-auto">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Services</th>
+                                            <th>Timeline</th>
+                                            <th>Offer</th>
+                                            <th>Price</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if($record && $record->pricingQuotes)
+                                        @foreach($record->pricingQuotes as $quote)
+                                        <tr>
+                                            <td>{{ $quote->services }}</td>
+                                            <td>{{ $quote->timeline }}</td>
+                                            <td>{{ $quote->quantity }}</td>
+                                            <td>${{ number_format($quote->unit_price, 2) }}</td>
+                                        </tr>
+                                        @endforeach
+                                        <tr>
+                                            <td colspan="3" style="text-align: right; font-weight: bold;">Total:</td>
+                                            <td style="font-weight: bold;">
+                                                ${{ number_format($record->pricingQuotes->sum('unit_price'), 2) }}
+                                            </td>
+                                        </tr>
+                                        @else
+                                        <tr>
+                                            <td colspan="4" style="text-align: center;">No pricing quotes available</td>
+                                        </tr>
+                                        @endif
+                                    </tbody>
+                                </table>
+                            </div>
+
+                        </div>
+                    </div>
+                    <!-- </div> -->
+                    <!-- </div> -->
+
+                    <div class="bottom-area-fixed">
+                        <p>CLOUDTACH</p>
+                        <p>1001 South Main Street, Montana, MT 59901</p>
+                        <p>info@cloudtach.com - www.cloudtach.com</p>
+
+                        <div class="bb_dotted"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- intro -->
         <div class="flex min-h-screen w-100">
             <div class="with-main-bg"
                 style="background-image: url('{{ asset('images/proposal-main.jpg') }}'); ">
@@ -690,73 +796,6 @@
             </div>
         </div>
 
-        <!-- project details -->
-        <div class="flex min-h-screen w-100">
-            <div class="with-main-bg"
-                style="background-image: url('{{ asset('images/proposal-main.jpg') }}'); ">
-                <div class="inner-container">
-
-                    <div class="flex flex-col lg:flex-row">
-                        <div class="hidden lg:block lg:w-full"></div>
-                        <div class="w-full">
-                            <div class="right-area-dev text-right lg:text-right text-left mt-6 mb-4">
-                                <h3 class="intro"> PROJECT DETAILS</h3>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="content-right-start abt_company">
-                        <div class="company-info dev_process ">
-                            <h3 class="font-bold text-2xl lg:text-3xl mb-4">PROJECT DESCRIPTION</h3>
-                            <p class="mb-6">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Eaque vero sit explicabo velit labore, numquam enim ullam eos odio saepe. Consequatur, laudantium dolores eveniet quas fugiat suscipit? Ut, doloremque labore.</p>
-                            <h3 class="font-bold text-2xl lg:text-3xl mb-4">Pricing Quote</h3>
-                            <div class="overflow-x-auto">
-                                <table>
-                                    <thead>
-                                        <tr>
-                                            <th>Services</th>
-                                            <th>Offer</th>
-                                            <th>Price</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @if($record && $record->pricingQuotes)
-                                        @foreach($record->pricingQuotes as $quote)
-                                        <tr>
-                                            <td>{{ $quote->services }}</td>
-                                            <td>{{ $quote->quantity }}</td>
-                                            <td>${{ number_format($quote->unit_price, 2) }}</td>
-                                        </tr>
-                                        @endforeach
-                                        <tr>
-                                            <td colspan="2" style="text-align: right; font-weight: bold;">Total:</td>
-                                            <td style="font-weight: bold;">
-                                                ${{ number_format($record->pricingQuotes->sum('unit_price'), 2) }}
-                                            </td>
-                                        </tr>
-                                        @else
-                                        <tr>
-                                            <td colspan="3" style="text-align: center;">No pricing quotes available</td>
-                                        </tr>
-                                        @endif
-                                    </tbody>
-                                </table>
-                            </div>
-
-                        </div>
-                    </div>
-                    <!-- </div> -->
-                    <!-- </div> -->
-
-                    <div class="bottom-area-fixed">
-                        <p>CLOUDTACH</p>
-                        <p>1001 South Main Street, Montana, MT 59901</p>
-                        <p>info@cloudtach.com - www.cloudtach.com</p>
-
-                        <div class="bb_dotted"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
 
 
         <!-- terms -->
@@ -1024,8 +1063,7 @@
 
     </div>
     <script>
-// JavaScript device detection (more accurate)
-function isDesktop() {
+        function isDesktop() {
     const userAgent = navigator.userAgent.toLowerCase();
     const mobileKeywords = ['android', 'webos', 'iphone', 'ipad', 'ipod', 'blackberry', 'windows phone'];
     
@@ -1038,19 +1076,34 @@ function isDesktop() {
     return !isMobile && isLargeScreen;
 }
 
-// Show/hide desktop message
+// Show/hide messages based on device
 document.addEventListener('DOMContentLoaded', function() {
+    const desktopMsg = document.getElementById('desktop-message');
+    const mobileWarning = document.getElementById('mobile-warning');
+    
     if (isDesktop()) {
-        document.getElementById('desktop-message').style.display = 'block';
+        // Desktop: show desktop message, hide mobile warning
+        if (desktopMsg) desktopMsg.style.display = 'block';
+        if (mobileWarning) mobileWarning.style.display = 'none';
+    } else {
+        // Mobile: show mobile warning, hide desktop message
+        if (desktopMsg) desktopMsg.style.display = 'none';
+        if (mobileWarning) mobileWarning.style.display = 'block';
     }
 });
 
 // Update on window resize
 window.addEventListener('resize', function() {
     const desktopMsg = document.getElementById('desktop-message');
-    if (desktopMsg) {
-        desktopMsg.style.display = isDesktop() ? 'block' : 'none';
+    const mobileWarning = document.getElementById('mobile-warning');
+    
+    if (isDesktop()) {
+        if (desktopMsg) desktopMsg.style.display = 'block';
+        if (mobileWarning) mobileWarning.style.display = 'none';
+    } else {
+        if (desktopMsg) desktopMsg.style.display = 'none';
+        if (mobileWarning) mobileWarning.style.display = 'block';
     }
 });
-</script>
+    </script>
 </x-filament-panels::page>

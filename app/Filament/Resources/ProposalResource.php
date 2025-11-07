@@ -46,10 +46,9 @@ class ProposalResource extends Resource
                     ->label('Customer phone'),
                 Forms\Components\TextInput::make('prepared_for_customer_address')
                     ->label('Customer address'),
-                Forms\Components\Textarea::make('project_description')
-                    ->columnSpanFull()
-                    ->rows(5),
-                    RichEditor::make('process_details_in_bullets')
+
+                RichEditor::make('objective')
+                    ->label('Objective')
                     ->columnSpanFull()
                     ->toolbarButtons([
                         'bold',
@@ -68,12 +67,50 @@ class ProposalResource extends Resource
                         'h3',
                         'strike',
                     ]),
-                    
+                RichEditor::make('project_description')
+                    ->label('Project Scope')
+                    ->columnSpanFull()
+                    ->toolbarButtons([
+                        'bold',
+                        'italic',
+                        'underline',
+                        'bulletList',
+                        'orderedList',
+                        'link',
+                        'undo',
+                        'redo',
+                    ])
+                    ->disableToolbarButtons([
+                        'attachFiles',
+                        'codeBlock',
+                        'h2',
+                        'h3',
+                        'strike',
+                    ]),
+
                 Forms\Components\Textarea::make('proces_briefing')
                     ->columnSpanFull()
                     ->rows(5),
-
-                    RichEditor::make('payment_terms')
+                RichEditor::make('process_details_in_bullets')
+                    ->columnSpanFull()
+                    ->toolbarButtons([
+                        'bold',
+                        'italic',
+                        'underline',
+                        'bulletList',
+                        'orderedList',
+                        'link',
+                        'undo',
+                        'redo',
+                    ])
+                    ->disableToolbarButtons([
+                        'attachFiles',
+                        'codeBlock',
+                        'h2',
+                        'h3',
+                        'strike',
+                    ]),
+                RichEditor::make('payment_terms')
                     ->columnSpanFull()
                     ->toolbarButtons([
                         'bold',
@@ -108,11 +145,16 @@ class ProposalResource extends Resource
                         ->relationship('pricingQuotes')
                         ->label('Services List')
                         ->schema([
-                            Grid::make(4)->schema([
+                            Grid::make(5)->schema([
                                 TextInput::make('services')
                                     ->required()
                                     ->label('Service'),
-                                TextInput::make('quantity')
+
+                                    TextInput::make('timeline')
+                                    ->required()
+                                    ->label('Timeline'),
+
+                                    TextInput::make('quantity')
                                     ->numeric()
                                     ->required()
                                     ->default(1)
@@ -120,6 +162,7 @@ class ProposalResource extends Resource
                                     ->afterStateUpdated(function ($state, callable $set, callable $get) {
                                         static::updateTotal($set, $get);
                                     }),
+
                                 TextInput::make('unit_price')
                                     ->numeric()
                                     ->required()
@@ -154,7 +197,7 @@ class ProposalResource extends Resource
                             ->prefix('$')
                             ->readOnly()
                             ->reactive()
-                            ->dehydrated(true), 
+                            ->dehydrated(true),
                     ]),
                 ])
         ];
@@ -230,7 +273,7 @@ class ProposalResource extends Resource
                 //
             ])
             ->actions([
-                    
+
                 Tables\Actions\ViewAction::make()
                     ->url(fn($record): string => static::getUrl('sign-proposal', ['record' => $record])),
                 Tables\Actions\EditAction::make(),

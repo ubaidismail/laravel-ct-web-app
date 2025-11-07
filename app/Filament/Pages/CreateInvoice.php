@@ -224,6 +224,10 @@ class CreateInvoice extends Page implements Forms\Contracts\HasForms
                     ->placeholder('Add comma seperated ponts or comments here')
                     ->rows(3)
                     ->maxLength(500)
+                    ->dehydrateStateUsing(function ($state) {
+                        // Replace arrow with text or remove it
+                        return str_replace(['→', '←', '↑', '↓'], '->', $state);
+                    })
             ])
     ];
     }

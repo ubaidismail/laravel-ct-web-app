@@ -15,6 +15,7 @@ class Proposals extends Model
      'prepared_for_customer_address',
      'proces_briefing',
      'process_details_in_bullets',
+     'objective',
      'project_description',
      'payment_terms',
      'total_project_price',
