@@ -55,61 +55,61 @@ class CompanySalesTargetResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->defaultSort('id', 'ASC')
-                ->columns([
-                    TextColumn::make('company_name')
-                        ->label('Company')
-                        ->searchable()
-                        ->sortable(),
-        
-                    TextColumn::make('sales_target')
-                        ->label('Target')
-                        ->prefix('$')
-                        ->searchable()
-                        ->sortable(),
-        
-                    TextColumn::make('total_sales')
-                        ->label('Actual Sales')
-                        ->prefix('$')
-                        ->getStateUsing(function($record){
-                            $period = Carbon::parse($record->period);
-        
-                            return invoices::whereYear('paid_date_formatted', $period->year)
-                                ->whereMonth('paid_date_formatted', $period->month)
-                                ->sum('total_amount');
-                        })
-                        ->searchable()
-                        ->sortable(),
-        
-                    TextColumn::make('status')
-                        ->label('Status')
-                        ->badge()
-                        ->getStateUsing(function($record){
-                            $period = Carbon::parse($record->period);
-                            
-                            $totalSales = invoices::whereYear('paid_date_formatted', $period->year)
-                                ->whereMonth('paid_date_formatted', $period->month)
-                                ->sum('total_amount');
-                            
-                            if ($totalSales >= $record->sales_target) {
-                                return 'Achieved';
-                            }
-                            return 'Not Achieved';
-                        })
-                        ->color(fn (string $state): string => match ($state) {
-                            'Achieved' => 'success',
-                            'Not Achieved' => 'danger',
-                        }),
-        
-                    TextColumn::make('period')
-                        ->label('Month')
-                        ->formatStateUsing(fn($state) => Carbon::parse($state)->format('M Y'))
-                        ->searchable()
-                        ->sortable()
-                ])
-                ->filters([
-                    //
-                ])
+            ->defaultSort('period', 'desc')
+            ->columns([
+                TextColumn::make('company_name')
+                    ->label('Company')
+                    ->searchable()
+                    ->sortable(),
+    
+                TextColumn::make('sales_target')
+                    ->label('Target')
+                    ->prefix('$')
+                    ->searchable()
+                    ->sortable(),
+    
+                TextColumn::make('total_sales')
+                    ->label('Actual Sales')
+                    ->prefix('$')
+                    ->getStateUsing(function($record){
+                        $period = Carbon::parse($record->period);
+    
+                        return invoices::whereYear('paid_date_formatted', $period->year)
+                            ->whereMonth('paid_date_formatted', $period->month)
+                            ->sum('total_amount');
+                    })
+                    ->searchable()
+                    ->sortable(),
+    
+                TextColumn::make('status')
+                    ->label('Target Status')
+                    ->badge()
+                    ->getStateUsing(function($record){
+                        $period = Carbon::parse($record->period);
+                        
+                        $totalSales = invoices::whereYear('paid_date_formatted', $period->year)
+                            ->whereMonth('paid_date_formatted', $period->month)
+                            ->sum('total_amount');
+                        
+                        if ($totalSales >= $record->sales_target) {
+                            return 'Achieved';
+                        }
+                        return 'Not Achieved';
+                    })
+                    ->color(fn (string $state): string => match ($state) {
+                        'Achieved' => 'success',
+                        'Not Achieved' => 'danger',
+                    }),
+    
+                TextColumn::make('period')
+                    ->label('Month')
+                    ->formatStateUsing(fn($state) => Carbon::parse($state)->format('M Y'))
+                    ->searchable()
+                    ->sortable()
+            ])
+            ->filters([
+                //
+            ])
             ->actions([
                 Tables\Actions\EditAction::make(),
             ])
