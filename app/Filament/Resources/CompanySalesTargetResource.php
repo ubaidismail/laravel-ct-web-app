@@ -73,8 +73,8 @@ class CompanySalesTargetResource extends Resource
                     ->getStateUsing(function ($record) {
                         $period = Carbon::parse($record->period);
 
-                        return invoices::whereYear('due_date', $period->year)
-                            ->whereMonth('due_date', $period->month)
+                        return invoices::whereYear('paid_date_formatted', $period->year)
+                            ->whereMonth('paid_date_formatted', $period->month)
                             ->sum('total_amount');
                     })
 
@@ -87,8 +87,8 @@ class CompanySalesTargetResource extends Resource
                     ->getStateUsing(function ($record) {
                         $period = Carbon::parse($record->period);
 
-                        $totalSales = invoices::whereYear('due_date', $period->year)
-                            ->whereMonth('due_date', $period->month)
+                        $totalSales = invoices::whereYear('paid_date_formatted', $period->year)
+                            ->whereMonth('paid_date_formatted', $period->month)
                             ->sum('total_amount');
 
                         if ($totalSales >= $record->sales_target) {
