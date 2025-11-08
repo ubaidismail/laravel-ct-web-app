@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\CompanySalesTargetResource\Pages;
 use App\Filament\Resources\CompanySalesTargetResource\RelationManagers;
 use App\Models\CompanySalesTargets;
+use App\Models\invoices;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Grid;
@@ -24,7 +25,6 @@ class CompanySalesTargetResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     protected static ?string $navigationGroup = 'Company';
-
     public static function form(Form $form): Form
     {
         return $form
@@ -42,10 +42,12 @@ class CompanySalesTargetResource extends Resource
                         ->numeric()
                         ->minValue(0),
 
+
+
                     DatePicker::make('period')
                         ->label('Period')
                         ->required()
-                    
+
                 ])
             ]);
     }
@@ -64,6 +66,40 @@ class CompanySalesTargetResource extends Resource
                     ->prefix('$')
                     ->searchable()
                     ->sortable(),
+
+                TextColumn::make('total_sales')
+                    ->label('Actual Sales')
+                    ->prefix('$')
+                    ->getStateUsing(function ($record) {
+                        $period = Carbon::parse($record->period);
+
+                        return invoices::whereYear('due_date', $period->year)
+                            ->whereMonth('due_date', $period->month)
+                            ->sum('total_amount');
+                    })
+
+                    ->searchable()
+                    ->sortable(),
+
+                TextColumn::make('status')
+                    ->label('Target Status')
+                    ->badge()
+                    ->getStateUsing(function ($record) {
+                        $period = Carbon::parse($record->period);
+
+                        $totalSales = invoices::whereYear('due_date', $period->year)
+                            ->whereMonth('due_date', $period->month)
+                            ->sum('total_amount');
+
+                        if ($totalSales >= $record->sales_target) {
+                            return 'Achieved';
+                        }
+                        return 'Not Achieved';
+                    })
+                    ->color(fn(string $state): string => match ($state) {
+                        'Achieved' => 'success',
+                        'Not Achieved' => 'danger',
+                    }),
 
                 TextColumn::make('period')
                     ->label('Period')
