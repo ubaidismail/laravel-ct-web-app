@@ -1,9 +1,9 @@
 <x-filament-panels::page>
-{{-- Mobile Warning Message - Shows only on mobile/tablet --}}
+    {{-- Mobile Warning Message - Shows only on mobile/tablet --}}
     <div id="mobile-warning" style="display: none;" class="bg-yellow-50 border-2 border-yellow-300 rounded-lg p-6 mb-6 mx-4">
         <div class="flex items-start gap-4">
             <svg class="w-8 h-8 text-yellow-600 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
             </svg>
             <div>
                 <h3 class="text-lg font-bold text-yellow-800 mb-2">Mobile Device Detected</h3>
@@ -168,9 +168,11 @@
         .sec-service {
             margin-top: 2.5rem;
         }
+
         h3.intro {
             text-transform: uppercase;
         }
+
         .intro-inner {
             line-height: 1.8;
             color: #333;
@@ -576,8 +578,8 @@
                     <div class="content-right-start abt_company">
                         <div class="company-info dev_process ">
                             <h3 class="font-bold text-2xl lg:text-3xl mb-4">PROJECT SCOPE</h3>
-                           {!! $record->project_description !!}
-                            
+                            {!! $record->project_description !!}
+
 
                         </div>
                     </div>
@@ -823,9 +825,20 @@
                     <div class="content-right-start abt_company terms">
                         <div class="company-info dev_process ">
                             <h4 class="font-bold text-xl lg:text-2xl mb-3 mt-4">I. PARTIES</h4>
-                            <p class="mb-4">This {{ $record->proposal_name ?? 'N/A' }} is specially prepared for Robert (the "Client" hereinafter) by CloudTach. If the Proposal is approved, it will be accepted as an agreement between the parties and terms and conditions set out below will be binding between the Client and the Company.</p>
+                            <p class="mb-4">This {{ $record->proposal_name ?? 'N/A' }} is specially prepared for {{ $record->prepared_for_customer_name ?? 'N/A' }} (the "Client" hereinafter) by CloudTach. If the Proposal is approved, it will be accepted as an agreement between the parties and terms and conditions set out below will be binding between the Client and the Company.</p>
                             <h4 class="font-bold text-xl lg:text-2xl mb-3 mt-6">II. TERM</h4>
-                            <p class="mb-4">This Agreement shall enter into force on the date of signature by both parties and shall remain in effect until the completion and final delivery of the project as defined in this Agreement, unless terminated earlier by mutual written consent of the parties. Upon completion and full payment, the Agreement shall automatically expire. Any further collaboration beyond this project may be continued under a new written agreement between the parties.</p>
+                            <!-- terms for fixed price project -->
+                            @if($record->proposal_type === 'fixed_price')
+
+                             <p class="mb-4">This Agreement shall enter into force on the date of signature by both parties and shall remain in effect until the completion and final delivery of the project as defined in this Agreement, unless terminated earlier by mutual written consent of the parties. Upon completion and full payment, the Agreement shall automatically expire. Any further collaboration beyond this project may be continued under a new written agreement between the parties.</p> 
+                            @else
+
+                            <p class="mb-4">
+                                This Agreement shall enter into force on the date of signature by both parties and shall remain in effect on a month-to-month (subscription) basis, corresponding to the duration of active sprints or services provided. Either party may terminate the Agreement by providing 30 days’ written notice.
+
+                                Payments will be made at the start of each sprint (month), and services will continue as long as payments are maintained. Any future or additional work beyond the current subscription period may be continued under a renewed or separate written agreement between the parties.
+                            </p>
+                            @endif
 
                         </div>
                     </div>
@@ -919,9 +932,12 @@
                             <p>This proposal can only be changed or modified by the CloudTach. A new proposal will be made if the clients wish to change the content of the document. <br> After the approval of the Client, the terms and conditions shall only be modified or changed by the written mutual consent.</p>
 
                             <h4 class="font-bold text-2xl">VII. INTELLECTUAL PROPERTY RIGHTS</h4>
+                            @if($record->proposal_type === 'fixed_price')
                             <p>Both parties agree and acknowledge that all intellectual property rights to the source code and any related materials shall belong to the Client upon delivery and full payment.</p>
-
-
+                            @else
+                            <p>Both parties agree and acknowledge that all intellectual property rights to the deliverables, source code, and related materials created and fully paid for under this Agreement shall belong to the Client.
+                                Ownership of any ongoing or future work will transfer only upon receipt of full payment for the respective sprint or subscription period.</p>
+                            @endif
                         </div>
                     </div>
                     <!-- </div> -->
@@ -1072,46 +1088,46 @@
     </div>
     <script>
         function isDesktop() {
-    const userAgent = navigator.userAgent.toLowerCase();
-    const mobileKeywords = ['android', 'webos', 'iphone', 'ipad', 'ipod', 'blackberry', 'windows phone'];
-    
-    // Check if any mobile keyword exists in user agent
-    const isMobile = mobileKeywords.some(keyword => userAgent.includes(keyword));
-    
-    // Also check screen size
-    const isLargeScreen = window.innerWidth >= 1024;
-    
-    return !isMobile && isLargeScreen;
-}
+            const userAgent = navigator.userAgent.toLowerCase();
+            const mobileKeywords = ['android', 'webos', 'iphone', 'ipad', 'ipod', 'blackberry', 'windows phone'];
 
-// Show/hide messages based on device
-document.addEventListener('DOMContentLoaded', function() {
-    const desktopMsg = document.getElementById('desktop-message');
-    const mobileWarning = document.getElementById('mobile-warning');
-    
-    if (isDesktop()) {
-        // Desktop: show desktop message, hide mobile warning
-        if (desktopMsg) desktopMsg.style.display = 'block';
-        if (mobileWarning) mobileWarning.style.display = 'none';
-    } else {
-        // Mobile: show mobile warning, hide desktop message
-        if (desktopMsg) desktopMsg.style.display = 'none';
-        if (mobileWarning) mobileWarning.style.display = 'block';
-    }
-});
+            // Check if any mobile keyword exists in user agent
+            const isMobile = mobileKeywords.some(keyword => userAgent.includes(keyword));
 
-// Update on window resize
-window.addEventListener('resize', function() {
-    const desktopMsg = document.getElementById('desktop-message');
-    const mobileWarning = document.getElementById('mobile-warning');
-    
-    if (isDesktop()) {
-        if (desktopMsg) desktopMsg.style.display = 'block';
-        if (mobileWarning) mobileWarning.style.display = 'none';
-    } else {
-        if (desktopMsg) desktopMsg.style.display = 'none';
-        if (mobileWarning) mobileWarning.style.display = 'block';
-    }
-});
+            // Also check screen size
+            const isLargeScreen = window.innerWidth >= 1024;
+
+            return !isMobile && isLargeScreen;
+        }
+
+        // Show/hide messages based on device
+        document.addEventListener('DOMContentLoaded', function() {
+            const desktopMsg = document.getElementById('desktop-message');
+            const mobileWarning = document.getElementById('mobile-warning');
+
+            if (isDesktop()) {
+                // Desktop: show desktop message, hide mobile warning
+                if (desktopMsg) desktopMsg.style.display = 'block';
+                if (mobileWarning) mobileWarning.style.display = 'none';
+            } else {
+                // Mobile: show mobile warning, hide desktop message
+                if (desktopMsg) desktopMsg.style.display = 'none';
+                if (mobileWarning) mobileWarning.style.display = 'block';
+            }
+        });
+
+        // Update on window resize
+        window.addEventListener('resize', function() {
+            const desktopMsg = document.getElementById('desktop-message');
+            const mobileWarning = document.getElementById('mobile-warning');
+
+            if (isDesktop()) {
+                if (desktopMsg) desktopMsg.style.display = 'block';
+                if (mobileWarning) mobileWarning.style.display = 'none';
+            } else {
+                if (desktopMsg) desktopMsg.style.display = 'none';
+                if (mobileWarning) mobileWarning.style.display = 'block';
+            }
+        });
     </script>
 </x-filament-panels::page>

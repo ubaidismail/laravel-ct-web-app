@@ -29,6 +29,13 @@ class ProposalResource extends Resource
     {
         return [
             Grid::make(2)->schema([
+                Select::make('proposal_type')
+                    ->label('Proposal type')
+                    ->options([
+                        'fixed_price' => 'Fixed Price',
+                        'subscription_based' => 'Subscription Based',
+                    ])
+                    ->required(),
                 Forms\Components\TextInput::make('proposal_name')
                     ->label('Proposal name')
                     ->required(),
@@ -240,6 +247,14 @@ class ProposalResource extends Resource
                     ->label('ID')
                     ->searchable()
                     ->sortable(),
+
+                TextColumn::make('proposal_type')
+                    ->label('Proposal Type')
+                    ->searchable()
+                    ->sortable()
+                    ->getStateUsing(function ($record) {
+                        return $record->proposal_type === 'fixed_price' ? 'Fixed Price' : 'Subscription Based';
+                    }),
 
                 TextColumn::make('proposal_name')
                     ->label('Proposal')

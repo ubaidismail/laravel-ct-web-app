@@ -21,6 +21,7 @@ class Proposals extends Model
      'total_project_price',
      'client_signature',
      'date_signed',
+     'proposal_type',
     ];
     protected $casts = [
         'date_signed' => 'datetime',
