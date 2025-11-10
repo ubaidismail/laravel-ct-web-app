@@ -40,7 +40,7 @@
         }
 
         .info-inner strong {
-            margin-right: 10px;
+            margin-right: 0;
         }
 
         .inner-container {
@@ -92,16 +92,18 @@
             margin-top: 1.5rem;
         }
 
+
         .customer-info h2,
         .company-info h3 {
             font-weight: 600;
             margin-bottom: 1rem;
             color: #1a1a1a;
+            text-transform: uppercase;
         }
 
         .info-inner {
             line-height: 2;
-            margin-bottom: 0.75rem;
+            /* margin-bottom: 0.75rem; */
             display: flex;
             /* justify-content: space-between; */
             align-items: center;
@@ -166,7 +168,9 @@
         .sec-service {
             margin-top: 2.5rem;
         }
-
+        h3.intro {
+            text-transform: uppercase;
+        }
         .intro-inner {
             line-height: 1.8;
             color: #333;
@@ -500,7 +504,7 @@
                                     @endphp
                                     @if($record)
                                     <div class="info-inner">
-                                        <strong>Client Company:</strong>
+                                        <strong>Company:</strong>
                                         <span>{{ $record->client_company_name ?? 'N/A' }}</span>
                                         <hr>
                                     </div>
@@ -675,12 +679,12 @@
                             <div class="content-right-start">
                                 <h3 class="intro"> Introduction</h3>
                                 <div class="customer-info ">
-                                    <h2 class="text-xl font-semibold mb-2 ">Dear <span>
+                                    <h4 class="text-xl font-semibold mb-2 ">Dear <span>
                                             @php
                                             $record = $this->record ?? $proposal ?? null;
                                             @endphp
                                             @if($record){{ $record->prepared_for_customer_name }}@endif
-                                        </span></h2>
+                                        </span></h4>
 
                                     <div class="intro-inner">
                                         <p>Thank you for your time on checking our {{ $record->proposal_name ?? 'N/A' }}.
@@ -858,7 +862,7 @@
                             <h4 class="font-bold text-2xl">III. PAYMENT</h4>
                             <p>The total amount due for the services selected by the Client above is <strong>
                                     ${{ $record->total_project_price ?? 'N/A' }}.
-                                </strong>It shall be paid as: {!! $record->payment_terms !!}</p>
+                                </strong>{!! $record->payment_terms !!}</p>
 
                             <h4 class="font-bold text-2xl">IV. RIGHTS & OBLIGATIONS OF THE PARTIES</h4>
                             <ul class="list-disc ">
