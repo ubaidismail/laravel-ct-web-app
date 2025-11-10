@@ -834,7 +834,7 @@
                             @else
 
                             <p class="mb-4">
-                                This Agreement shall enter into force on the date of signature by both parties and shall remain in effect on a month-to-month (subscription) basis, corresponding to the duration of active sprints or services provided. Either party may terminate the Agreement by providing 30 days’ written notice.
+                                This Agreement shall enter into force on the date of signature by both parties and shall remain in effect on a month-to-month (subscription) basis, corresponding to the duration of active sprints or services provided. Either party may terminate the Agreement by providing 10 days’ written notice.
 
                                 Payments will be made at the start of each sprint (month), and services will continue as long as payments are maintained. Any future or additional work beyond the current subscription period may be continued under a renewed or separate written agreement between the parties.
                             </p>
