@@ -243,7 +243,7 @@
         .right-area-dev p {
             color: #000;
             line-height: 1.8;
-            text-align: right;
+            text-align: justify;
             max-width: 50%;
             margin-left: auto;
             font-size: 13px;
@@ -613,8 +613,9 @@
                                         <tr>
                                             <th>Services</th>
                                             <th>Timeline</th>
-                                            <th>Offer</th>
-                                            <th>Price</th>
+                                            <th>Sprints</th>
+                                            <th>Cost per Sprint</th>
+                                            <th>Total</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -625,12 +626,15 @@
                                             <td>{{ $quote->timeline }}</td>
                                             <td>{{ $quote->quantity }}</td>
                                             <td>${{ number_format($quote->unit_price, 2) }}</td>
+                                            <td>${{ number_format($quote->quantity * $quote->unit_price, 2) }}</td>
                                         </tr>
                                         @endforeach
                                         <tr>
-                                            <td colspan="3" style="text-align: right; font-weight: bold;">Total:</td>
+                                            <td colspan="4" style="text-align: right; font-weight: bold;">Total:</td>
                                             <td style="font-weight: bold;">
-                                                ${{ number_format($record->pricingQuotes->sum('unit_price'), 2) }}
+                                                ${{ number_format($record->pricingQuotes->sum(function ($quote) {
+                                                    return $quote->quantity * $quote->unit_price;
+                                                }), 2) }}
                                             </td>
                                         </tr>
                                         @else

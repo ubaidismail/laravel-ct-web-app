@@ -155,6 +155,7 @@ class ProposalResource extends Resource
                                     ->label('Timeline'),
 
                                     TextInput::make('quantity')
+                                    ->label('Sprints')
                                     ->numeric()
                                     ->required()
                                     ->default(1)
@@ -164,6 +165,7 @@ class ProposalResource extends Resource
                                     }),
 
                                 TextInput::make('unit_price')
+                                    ->label('Cost per Sprint')
                                     ->numeric()
                                     ->required()
                                     ->prefix('$')
