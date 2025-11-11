@@ -689,15 +689,12 @@
                                         </span></h4>
 
                                     <div class="intro-inner">
-                                        <p>Thank you for your time on checking our {{ $record->proposal_name ?? 'N/A' }}.
+                                        <p>
+                                            Thank you for taking the time to review our proposal. We are CloudTach, a digital product design and development company specializing in creating innovative, scalable, and user-focused software solutions for web and mobile.
 
-                                            We are a digital product design and development company, creating innovative software and digital products for web and mobile. Our focus is on delivering high-quality, flexible, and cost-effective solutions.
+                                            Our goal is to help businesses transform their ideas into powerful digital products that drive growth and efficiency. We focus on delivering high-quality, flexible, and cost-effective solutions tailored to each client’s unique needs.
 
-                                            Having a good mobile app will increase your sales and subscriptions. This means that your app should be stable, user-friendly, and fast.
-
-                                            In this proposal, you'll see information about CloudTach our services, pricing, terms, and conditions.
-
-                                            We look forward to talking with you.</p>
+                                            This proposal outlines our approach, capabilities, and project plan to help you understand how we can work together to achieve your goals. We look forward to collaborating with you and turning your vision into reality.</p>
 
                                         <p>Sincerely,</p>
 
@@ -739,7 +736,7 @@
                             <div class="content-right-start abt_company">
                                 <div class="company-info ">
                                     <h3 class="font-bold text-2xl lg:text-3xl mb-4">About the company</h3>
-                                    <p class="mb-4">At CloudTach we provide digital product design and development services, we've helped businesses across every industry turn their tech challenges into competitive advantages. Whether you need a revenue-generating website, a mobile app, or a SaaS platform that scales, we deliver solutions that actually work.</p>
+                                    <p class="mb-4">At CloudTach we provide digital product design and development services, we've helped businesses across every industry turn their tech challenges into competitive advantages. Whether you need a revenue-generating website, a mobile app, or a SaaS platform that scales, we deliver solutions that produce results.</p>
                                     <div class="sec-service">
                                         <h3 class="font-bold text-3xl">OUR Services</h3>
                                         <div class="flex ">
@@ -747,11 +744,12 @@
                                                 <li>Web Design & Development</li>
                                                 <li>Mobile App Design & Development</li>
                                                 <li>SaaS Development</li>
+                                                <li>PaaS Development</li>
                                             </ul>
                                             <ul class="flex-1">
-                                                <li>PaaS Development</li>
                                                 <li>UI/UX Design</li>
                                                 <li>AI Automation</li>
+                                                <li>Maintenance & Support</li>
                                             </ul>
                                         </div>
                                     </div>
@@ -830,7 +828,7 @@
                             <!-- terms for fixed price project -->
                             @if($record->proposal_type === 'fixed_price')
 
-                             <p class="mb-4">This Agreement shall enter into force on the date of signature by both parties and shall remain in effect until the completion and final delivery of the project as defined in this Agreement, unless terminated earlier by mutual written consent of the parties. Upon completion and full payment, the Agreement shall automatically expire. Any further collaboration beyond this project may be continued under a new written agreement between the parties.</p> 
+                            <p class="mb-4">This Agreement shall enter into force on the date of signature by both parties and shall remain in effect until the completion and final delivery of the project as defined in this Agreement, unless terminated earlier by mutual written consent of the parties. Upon completion and full payment, the Agreement shall automatically expire. Any further collaboration beyond this project may be continued under a new written agreement between the parties.</p>
                             @else
 
                             <p class="mb-4">
