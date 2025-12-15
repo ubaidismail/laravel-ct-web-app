@@ -243,7 +243,7 @@ class EditInvoice extends Page implements Forms\Contracts\HasForms
     {
         $formData = $this->form->getState();
         $items = $formData['items'] ?? [];
-        $taxRate = ($formData['tax_rate'] ?? 0);
+        $taxRate = (float) ($formData['tax_rate'] ?? 0);  // Cast to float
         
         $subtotal = 0;
         

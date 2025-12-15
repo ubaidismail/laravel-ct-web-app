@@ -130,7 +130,7 @@
         <tr>
             <td class="right"><strong>Tax Amount:</strong></td>
             <td class="right">
-            $ {{ $invoice->tax_amount === '' ? '0.00' : number_format($invoice->tax_amount, 2) }}
+            $ {{ $invoice->tax_amount === '' || $invoice->tax_amount === null ? '0.00' : number_format($invoice->tax_amount, 2) }}
             </td>
             
         </tr>
