@@ -36,6 +36,13 @@ class ProposalResource extends Resource
                         'subscription_based' => 'Subscription Based',
                     ])
                     ->required(),
+                Select::make('send_as')
+                    ->label('Proposal Send As')
+                    ->options([
+                        'company' => 'Company',
+                        'individual' => 'Individual',
+                    ])
+                    ->required(),
                 Forms\Components\TextInput::make('proposal_name')
                     ->label('Proposal name')
                     ->required(),

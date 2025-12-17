@@ -689,20 +689,26 @@
                                         </span></h4>
 
                                     <div class="intro-inner">
+                                        
+                                        @if($record->send_as === 'company')
                                         <p>
                                             Thank you for taking the time to review our proposal. We are CloudTach, a digital product design and development company specializing in creating innovative, scalable, and user-focused software solutions for web and mobile.
 
                                             Our goal is to help businesses transform their ideas into powerful digital products that drive growth and efficiency. We focus on delivering high-quality, flexible, and cost-effective solutions tailored to each client’s unique needs.
 
                                             This proposal outlines our approach, capabilities, and project plan to help you understand how we can work together to achieve your goals. We look forward to collaborating with you and turning your vision into reality.</p>
-
+                                            @elseif($record->send_as === 'individual')
+                                            <p>
+                                            Thank you for taking the time to review my proposal. I'm Ubaid Ismail, self-employed web and mobile developer and AI automation expert specializing in creating innovative, scalable, and user-focused software solutions for web and mobile.
+                                            This proposal outlines my approach, capabilities, and project plan to help you understand how I can work together to achieve your goals. I look forward to collaborating with you and turning your vision into reality.</p>
+                                            @endif
                                         <p>Sincerely,</p>
-
                                         <p><strong>Ubaid Ismail</strong></p>
-
-                                        <p>Founder</p>
-
+                                        @if($record->send_as === 'company')
+                                        <p><strong>Founder</strong></p>
                                         <p><strong>CloudTach</strong></p>
+                                        @endif
+
                                     </div>
                                 </div>
                             </div>
@@ -732,13 +738,32 @@
                     <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
                         <div class="hidden lg:block lg:col-span-6"></div>
                         <div class="lg:col-span-6">
-                            <h3 class="intro text-right lg:text-right text-left text-black mt-6"> COMPANY OVERVIEW</h3>
+                            <h3 class="intro text-right lg:text-right text-left text-black mt-6">
+                            @if($record->send_as === 'company')     
+                            COMPANY OVERVIEW
+                            @endif
+
+                            </h3>
                             <div class="content-right-start abt_company">
                                 <div class="company-info ">
-                                    <h3 class="font-bold text-2xl lg:text-3xl mb-4">About the company</h3>
+                                    <h3 class="font-bold text-2xl lg:text-3xl mb-4">
+                                    @if($record->send_as === 'company')
+                                        About the company
+                                    @elseif($record->send_as === 'individual')
+                                        About Me
+                                    @endif
+                                    </h3>
+                                    @if($record->send_as === 'company')
                                     <p class="mb-4">At CloudTach we provide digital product design and development services, we've helped businesses across every industry turn their tech challenges into competitive advantages. Whether you need a revenue-generating website, a mobile app, or a SaaS platform that scales, we deliver solutions that produce results.</p>
+                                    @else
+                                    <p class="mb-4"> I'm a full-stack developer and AI solutions expert who has successfully delivered 300+ projects across the complete Software Development Life Cycle (SDLC). From MVP development to enterprise-scale solutions, I specialize in transforming business ideas into scalable digital products.</p>
+                                    @endif
                                     <div class="sec-service">
+                                    @if($record->send_as === 'company')
                                         <h3 class="font-bold text-3xl">OUR Services</h3>
+                                    @else
+                                    <h3 class="font-bold text-3xl">Services I Offer</h3>
+                                    @endif
                                         <div class="flex ">
                                             <ul>
                                                 <li>Web Design & Development</li>
@@ -778,7 +803,7 @@
                         <div class="hidden lg:block lg:w-full"></div>
                         <div class="w-full">
                             <div class="right-area-dev text-right lg:text-right text-left mt-6 mb-4">
-                                <h3 class="intro"> OUR PROCESS</h3>
+                                <h3 class="intro"> PROCESS</h3>
                                 <p class="text-black mt-2">{{$record->proces_briefing ?? 'N/A'}}</p>
                             </div>
                         </div>

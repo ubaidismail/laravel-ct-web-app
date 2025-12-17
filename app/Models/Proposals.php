@@ -22,6 +22,7 @@ class Proposals extends Model
      'client_signature',
      'date_signed',
      'proposal_type',
+     'send_as',
     ];
     protected $casts = [
         'date_signed' => 'datetime',
