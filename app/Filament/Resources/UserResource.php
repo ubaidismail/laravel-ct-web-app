@@ -23,7 +23,7 @@ class UserResource extends Resource
     protected static ?string $model = User::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-users';
-
+    protected static ?string $navigationLabel = 'Customers';
     public static function shouldRegisterNavigation(): bool
     {
         return auth()->user() && auth()->user()->user_role === 'admin';

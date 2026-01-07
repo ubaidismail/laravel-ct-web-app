@@ -19,6 +19,11 @@ class AIDataInsightsChatbot extends Page
 {
     protected static ?string $navigationIcon = 'heroicon-o-chat-bubble-left-right';
     protected static ?string $navigationLabel = 'AI Assistant';
+    // turn off navigation
+    public static function shouldRegisterNavigation(): bool
+    {
+        return false;
+    }
     protected static string $view = 'filament.pages.a-i-data-insights-chatbot';
     protected static ?string $navigationGroup = 'Company';
 

@@ -89,32 +89,34 @@ class GenerateInsights extends Page
 
             $data = $this->form->getState();
 
-            // Create report record
-            $report = AIInsightReport::create([
-                'type' => $data['type'],
-                'data' => [],
-                'generated_at' => now(),
-                'user_id' => Auth::id(),
-                'status' => 'generating'
-            ]);
 
             // Generate insights
             $aiService = app(AIInsightsService::class);
             $insights = $aiService->generateInsights($data['type'], $data['date_range']);
+            if (!empty($insights)) {
+                $report = AIInsightReport::create([
+                    'type' => $data['type'],
+                    'data' => [],
+                    'generated_at' => now(),
+                    'user_id' => Auth::id(),
+                    'status' => 'generating'
+                ]);
+                
+                // Update report
 
-            // Update report
-            $report->update([
-                'data' => $insights,
-                'status' => 'completed'
-            ]);
+                $report->update([
+                    'data' => $insights,
+                    'status' => 'completed'
+                ]);
 
-            $this->generatedInsights = $insights;
-            $this->isGenerating = false;
+                $this->generatedInsights = $insights;
+                $this->isGenerating = false;
 
-            Notification::make()
-                ->title('Insights Generated Successfully')
-                ->success()
-                ->send();
+                Notification::make()
+                    ->title('Insights Generated Successfully')
+                    ->success()
+                    ->send();
+            }
         } catch (\Exception $e) {
             $this->isGenerating = false;
 

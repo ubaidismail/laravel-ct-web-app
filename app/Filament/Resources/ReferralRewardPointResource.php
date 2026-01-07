@@ -27,7 +27,10 @@ class ReferralRewardPointResource extends Resource
     protected static ?string $navigationLabel = 'Referral Reward Points';
     protected static ?string $label = 'Referral Reward Point';
     protected static ?string $navigationGroup = 'Company';
-    
+    public static function shouldRegisterNavigation(): bool
+    {
+        return false;
+    }
     public static function form(Form $form): Form
     {
         return $form

@@ -5,6 +5,7 @@ namespace App\Services;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Filament\Notifications\Notification;
 
 class AIInsightsService
 {
@@ -28,19 +29,28 @@ class AIInsightsService
             // Step 2: Format data for AI
             $prompt = $this->buildPrompt($type, $data);
             
-            // Step 3: Send to Gemini API
+            // Step 3: Send to AI model
             $insights = $this->callOpenAICompatible($prompt);
-            
-            // Step 4: Structure the response
-            return $this->formatInsights($insights, $type);
+            if($insights){
+                // Step 4: Structure the response
+                return $this->formatInsights($insights, $type);
+            }else{
+                return [];
+            }
         } catch (\Exception $e) {
             Log::error('AI Insights Generation Failed', [
                 'type' => $type,
                 'dateRange' => $dateRange,
                 'error' => $e->getMessage()
             ]);
-            throw $e;
+            Notification::make()
+                ->title('Error')
+                ->body('Failed to generate insights: ' . $e->getMessage())
+                ->danger()
+                ->send();
+            return [];
         }
+        return [];
     }
 
     private function gatherData(string $type, string $dateRange): array
@@ -259,66 +269,88 @@ $dataString = json_encode($data, JSON_PRETTY_PRINT);
     };
 }
 
-private function callGemini(string $prompt): string
-{
+// private function callGemini(string $prompt): string
+// {
     
-    $response = Http::timeout(30)->withHeaders([
-        'Content-Type' => 'application/json',
-    ])->post($this->apiUrl . '?key=' . $this->apiKey, [
-        'contents' => [
-            [
-                'parts' => [
-                    ['text' => $prompt]
-                ]
-            ]
-        ],
-        'generationConfig' => [
-            'temperature' => 0.1,
-            'topK' => 40,
-            'topP' => 0.95,
-            'maxOutputTokens' => 4096,
-        ]
-    ]);
+//     $response = Http::timeout(30)->withHeaders([
+//         'Content-Type' => 'application/json',
+//     ])->post($this->apiUrl . '?key=' . $this->apiKey, [
+//         'contents' => [
+//             [
+//                 'parts' => [
+//                     ['text' => $prompt]
+//                 ]
+//             ]
+//         ],
+//         'generationConfig' => [
+//             'temperature' => 0.1,
+//             'topK' => 40,
+//             'topP' => 0.95,
+//             'maxOutputTokens' => 4096,
+//         ]
+//     ]);
 
-    if ($response->successful()) {
-        $result = $response->json();
-        if (isset($result['candidates'][0]['content']['parts'][0]['text'])) {
-            return $result['candidates'][0]['content']['parts'][0]['text'];
-        }
-    }
+//     if ($response->successful()) {
+//         $result = $response->json();
+//         if (isset($result['candidates'][0]['content']['parts'][0]['text'])) {
+//             return $result['candidates'][0]['content']['parts'][0]['text'];
+//         }
+//     }
 
-    throw new \Exception('Gemini API call failed: ' . $response->body());
-}
+//     throw new \Exception('Gemini API call failed: ' . $response->body());
+// }
 
-private function callOpenAICompatible(string $prompt, bool $stream = false): string
+private function callOpenAICompatible(string $prompt, bool $stream = false): ?string
 {
-    $response = Http::timeout(30)->withHeaders([
-        'Content-Type' => 'application/json',
-        'Authorization' => 'Bearer ' . $this->apiKey,
-    ])->post($this->apiUrl, [
-        'messages' => [
-            [
-                'role' => 'user',
-                'content' => $prompt
-            ]
-        ],
-        'model' => 'openai/gpt-oss-120b:novita',
-        'stream' => false,
-        'temperature' => 0.1,
-        'max_tokens' => 4096, 
-        'top_p' => 0.95,
-    ]);
-
-    if ($response->successful()) {
-        $result = $response->json();
+    try {
+        $response = Http::timeout(30)->withHeaders([
+            'Content-Type' => 'application/json',
+            'Authorization' => 'Bearer ' . $this->apiKey,
+        ])->post($this->apiUrl, [
+            'messages' => [
+                [
+                    'role' => 'user',
+                    'content' => $prompt
+                ]
+            ],
+            'model' => 'openai/gpt-oss-120b:nebius',
+            'stream' => false,
+            'temperature' => 0.1,
+            'max_tokens' => 4096, 
+            'top_p' => 0.95,
+        ]);
         
-        if (isset($result['choices'][0]['message']['content'])) {
-            // dd($result['choices'][0]['message']['content']);
-            return $result['choices'][0]['message']['content'];
-        }
-    }
+        if ($response->successful()) {
+            $result = $response->json();
+            
+            if (isset($result['choices'][0]['message']['content'])) {
+                return $result['choices'][0]['message']['content'];
+            }
+        }else{
+            $errorDetails = 'Status: ' . $response->status() . ' - ' . $response->body();
 
-    throw new \Exception('OpenAI-compatible API call failed: ' . $response->body());
+            Notification::make()
+                ->title('Failed to generate insights')
+                ->body($errorDetails)
+                ->danger()
+                ->send();
+            
+            return null;
+        }
+
+       
+
+    } catch (\Throwable $th) {
+        // Handle actual exceptions (timeout, connection errors, etc.)
+        Notification::make()
+            ->title('Error')
+            ->body('Failed to connect to AI service: ' . $th->getMessage())
+            ->danger()
+            ->send();
+
+        return null;
+    }
+    // return false;
 }
 
 private function formatInsights(string $rawInsights, string $type): array
