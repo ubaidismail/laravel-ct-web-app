@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\ProposalResource\Pages;
 use App\Filament\Resources\ProposalResource\RelationManagers;
 use App\Models\Proposals;
+use App\Models\ProposalVersions;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -29,6 +30,7 @@ class ProposalResource extends Resource
     {
         return [
             Grid::make(2)->schema([
+
                 Select::make('proposal_type')
                     ->label('Proposal type')
                     ->options([
@@ -164,11 +166,11 @@ class ProposalResource extends Resource
                                     ->required()
                                     ->label('Service'),
 
-                                    TextInput::make('timeline')
+                                TextInput::make('timeline')
                                     ->required()
                                     ->label('Timeline'),
 
-                                    TextInput::make('quantity')
+                                TextInput::make('quantity')
                                     ->label('Sprints')
                                     ->numeric()
                                     ->required()
@@ -254,7 +256,10 @@ class ProposalResource extends Resource
                     ->label('ID')
                     ->searchable()
                     ->sortable(),
-
+                TextColumn::make('version_number')
+                    ->label('Version')
+                    ->searchable()
+                    ->sortable(),
                 TextColumn::make('proposal_type')
                     ->label('Proposal Type')
                     ->searchable()
@@ -300,6 +305,33 @@ class ProposalResource extends Resource
 
                 Tables\Actions\ViewAction::make()
                     ->url(fn($record): string => static::getUrl('sign-proposal', ['record' => $record])),
+
+                Tables\Actions\Action::make('versionHistory')
+                    ->label('Version History')
+                    ->icon('heroicon-o-clock')
+                    ->color('gray')
+                    ->form([
+                        Forms\Components\Select::make('version_id')
+                            ->label('Version')
+                            ->options(
+                                fn($record) =>
+                                ProposalVersions::where('proposal_id', $record->id)
+                                    ->orderByDesc('version_number')
+                                    ->pluck('version_number', 'id')
+                            )
+                            ->required(),
+                    ])
+                    ->action(function ($record, array $data) {
+                        // redirect using selected version id
+                        return redirect(
+                            static::getUrl('sign-proposal', [
+                                'record' => $record->id,         // current record
+                                'version' => $data['version_id'] // selected version
+                            ])
+                        );
+                    }),
+
+
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])
