@@ -257,7 +257,7 @@ class ProposalResource extends Resource
                     ->label('ID')
                     ->searchable()
                     ->sortable(),
-               
+
                 TextColumn::make('version_number')
                     ->label('Version')
                     ->searchable()
@@ -304,57 +304,61 @@ class ProposalResource extends Resource
                 //
             ])
             ->actions([
+                Tables\Actions\ActionGroup::make([
+                    Tables\Actions\Action::make('views_count')
+                        ->label('Proposal Views')
+                        ->icon('heroicon-o-eye')
+                        ->modalHeading(fn($record) => 'Details')
+                        ->modalWidth('7xl')
+                        ->modalContent(function ($record) {
+                            $views = \App\Models\ProposalViews::where('proposal_id', $record->id)
+                                ->orderBy('created_at', 'desc')
+                                ->get();
 
-                Tables\Actions\Action::make('views_count')
-                ->label('Proposal Views')
-                // ->counts('views')
-                ->modalHeading(fn($record) => 'Details')
-                ->modalWidth('7xl')
-                ->modalContent(function ($record) {
-                    $views = \App\Models\ProposalViews::where('proposal_id', $record->id)
-            ->orderBy('created_at', 'desc')
-            ->get();
-        
-        return view('filament.resources.modals.proposal-views', [
-            'views' => $views,
-            'record' => $record
-        ]);
-    })
-                ->modalSubmitAction(false)
-                ->modalCancelActionLabel('Close'),
-                // ->sortable(),
+                            return view('filament.resources.modals.proposal-views', [
+                                'views' => $views,
+                                'record' => $record
+                            ]);
+                        })
+                        ->modalSubmitAction(false)
+                        ->modalCancelActionLabel('Close'),
+                    // ->sortable(),
+                    Tables\Actions\ViewAction::make()
+                        ->icon('heroicon-o-link')
+                        ->label('Open Proposal')
+                        ->url(fn($record): string => static::getUrl('sign-proposal', ['record' => $record])),
 
-                Tables\Actions\ViewAction::make()
-                    ->url(fn($record): string => static::getUrl('sign-proposal', ['record' => $record])),
-
-                Tables\Actions\Action::make('versionHistory')
-                    ->label('Version History')
-                    ->icon('heroicon-o-clock')
-                    ->color('gray')
-                    ->form([
-                        Forms\Components\Select::make('version_id')
-                            ->label('Version')
-                            ->options(
-                                fn($record) =>
-                                ProposalVersions::where('proposal_id', $record->id)
-                                    ->orderByDesc('version_number')
-                                    ->pluck('version_number', 'id')
-                            )
-                            ->required(),
-                    ])
-                    ->action(function ($record, array $data) {
-                        // redirect using selected version id
-                        return redirect(
-                            static::getUrl('sign-proposal', [
-                                'record' => $record->id,         // current record
-                                'version' => $data['version_id'] // selected version
-                            ])
-                        );
-                    }),
+                    Tables\Actions\Action::make('versionHistory')
+                        ->label('Version History')
+                        ->icon('heroicon-o-clock')
+                        ->color('gray')
+                        ->form([
+                            Forms\Components\Select::make('version_id')
+                                ->label('Version')
+                                ->options(
+                                    fn($record) =>
+                                    ProposalVersions::where('proposal_id', $record->id)
+                                        ->orderByDesc('version_number')
+                                        ->pluck('version_number', 'id')
+                                )
+                                ->required(),
+                        ])
+                        ->action(function ($record, array $data) {
+                            // redirect using selected version id
+                            return redirect(
+                                static::getUrl('sign-proposal', [
+                                    'record' => $record->id,         // current record
+                                    'version' => $data['version_id'] // selected version
+                                ])
+                            );
+                        }),
 
 
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                    Tables\Actions\EditAction::make(),
+                    Tables\Actions\DeleteAction::make(),
+                ]),
+
+
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
