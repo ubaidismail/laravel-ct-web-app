@@ -7,6 +7,7 @@ use App\Models\Proposals;
 use App\Models\ProposalVersions;
 use Filament\Resources\Pages\Page;
 use Filament\Notifications\Notification;
+use App\Services\TrackProposalViews;
 use Livewire\Attributes\Validate;
 
 class ProposalBuilder extends Page
@@ -34,9 +35,14 @@ class ProposalBuilder extends Page
                 // echo $versionNumber;
             if ($version) {
                 $this->record = $version;
+
+
                 return;
             }
         }
+        app(TrackProposalViews::class)->trackPageView(
+            recordId: $record->id,
+        );
 
         // Fallback to the main proposal record if no version is requested/found
         $this->record = $record;

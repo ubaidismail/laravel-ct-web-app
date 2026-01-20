@@ -32,4 +32,9 @@ class Proposals extends Model
     {
         return $this->hasMany(ProposalPricingQuote::class, 'proposal_id');
     }
+
+    public function views(): HasMany
+    {
+        return $this->hasMany(ProposalViews::class, 'proposal_id');
+    }
 }

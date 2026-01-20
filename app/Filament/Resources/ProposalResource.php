@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\{Grid, TextInput, Select, Repeater, DatePicker, Textarea, Section, Placeholder};
 use Filament\Forms\Components\RichEditor;
+use App\Models\ProposalViews;
 
 class ProposalResource extends Resource
 {
@@ -256,6 +257,7 @@ class ProposalResource extends Resource
                     ->label('ID')
                     ->searchable()
                     ->sortable(),
+               
                 TextColumn::make('version_number')
                     ->label('Version')
                     ->searchable()
@@ -302,6 +304,25 @@ class ProposalResource extends Resource
                 //
             ])
             ->actions([
+
+                Tables\Actions\Action::make('views_count')
+                ->label('Proposal Views')
+                // ->counts('views')
+                ->modalHeading(fn($record) => 'Details')
+                ->modalWidth('7xl')
+                ->modalContent(function ($record) {
+                    $views = \App\Models\ProposalViews::where('proposal_id', $record->id)
+            ->orderBy('created_at', 'desc')
+            ->get();
+        
+        return view('filament.resources.modals.proposal-views', [
+            'views' => $views,
+            'record' => $record
+        ]);
+    })
+                ->modalSubmitAction(false)
+                ->modalCancelActionLabel('Close'),
+                // ->sortable(),
 
                 Tables\Actions\ViewAction::make()
                     ->url(fn($record): string => static::getUrl('sign-proposal', ['record' => $record])),
