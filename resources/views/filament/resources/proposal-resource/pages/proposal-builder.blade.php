@@ -625,6 +625,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
+
                                         @if($record && $record->pricingQuotes)
                                         @foreach($record->pricingQuotes as $quote)
                                         <tr>

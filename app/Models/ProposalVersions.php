@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+
 class ProposalVersions extends Model
 {
     protected $fillable = ['prepared_for_customer_name',
@@ -33,6 +34,6 @@ class ProposalVersions extends Model
     ];
     public function pricingQuotes(): HasMany
     {
-        return $this->hasMany(ProposalPricingQuote::class, 'proposal_id');
+        return $this->hasMany(ProposalPricingQuoteVersions::class, 'proposal_version_id');
     }
 }

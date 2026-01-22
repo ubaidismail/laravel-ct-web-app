@@ -7,6 +7,7 @@ use Filament\Actions;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\EditRecord;
 use App\Models\ProposalVersions;
+use App\Models\ProposalPricingQuoteVersions;
 use App\Models\Proposals;
 
 class EditProposal extends EditRecord
@@ -23,7 +24,7 @@ class EditProposal extends EditRecord
     protected function beforeSave(): void
     {
         // Create a new version of the proposal with the current version number
-        ProposalVersions::create([
+        $create_porposal_version = ProposalVersions::create([
             'version_number' => $this->record->version_number === 1 ? 1 : $this->record->version_number,
             'proposal_name' => $this->record->proposal_name,
             'prepared_for_customer_name' => $this->record->prepared_for_customer_name,
@@ -45,6 +46,18 @@ class EditProposal extends EditRecord
             'proposal_id' => $this->record->id,
             'send_as' => $this->record->send_as,
         ]);
+        $currentVersion = $this->record->version_number === 1 ? 1 : $this->record->version_number;
+        // get id of create versions
+        foreach ($this->record->pricingQuotes as $quote) {
+            ProposalPricingQuoteVersions::create([
+                'version_number' => $currentVersion,
+                'proposal_version_id' => $create_porposal_version->id,
+                'services' => $quote->services,
+                'timeline' => $quote->timeline,
+                'quantity' => $quote->quantity,
+                'unit_price' => $quote->unit_price,
+            ]);
+        }
         
         // Increment the version number in the proposals table
         $this->record->version_number = ($this->record->version_number ?? 1) + 1;

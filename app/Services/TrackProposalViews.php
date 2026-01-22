@@ -16,14 +16,9 @@ class TrackProposalViews
         ProposalViews::create([
             'proposal_id' => $recordId,
             'page_url' => request()->fullUrl(),
-            // 'referrer' => request()->header('referer'),
             'ip_hash' => request()->ip(),
             'user_agent' => request()->header('user-agent'),
             'browser' => $this->getBrowser(),
-            // 'device' => $this->getDeviceType(),
-            // 'session_id' => session()->getId(),
-            // 'query_params' => json_encode(request()->query()),
-            // 'extra_data' => json_encode($extraData),
             'viewed_at' => now(),
         ]);
        }

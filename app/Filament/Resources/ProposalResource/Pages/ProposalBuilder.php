@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\ProposalResource\Pages;
 
 use App\Filament\Resources\ProposalResource;
+use App\Models\ProposalPricingQuoteVersions;
 use App\Models\Proposals;
 use App\Models\ProposalVersions;
 use Filament\Resources\Pages\Page;
@@ -32,7 +33,7 @@ class ProposalBuilder extends Page
             $version = ProposalVersions::where('proposal_id', $record->id)
                 ->where('id', $versionNumber)
                 ->first();
-                // echo $versionNumber;
+                // dd($version);
             if ($version) {
                 $this->record = $version;
 
