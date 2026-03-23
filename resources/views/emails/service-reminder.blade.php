@@ -41,11 +41,14 @@
             <div class="highlight">
                 <strong>📋 Service Details:</strong><br>
                 <strong>Service:</strong> {{ $serviceName }}<br>
+                <strong>Service Description:</strong> {{ $serviceDescription }}<br>
+                <strong>Service Duration:</strong> {{ $serviceDuration }}<br>
+                <strong>Renew Cost:</strong> $ {{ $renewCost }}<br>
                 <strong>Expiry Date:</strong> {{ $endDate }}<br>
                 <strong>Days Remaining:</strong> {{ $daysLeft }} days
             </div>
             
-            <p>To continue enjoying our services without interruption, please contact us to renew your service.</p>
+            <p>To continue with {{ $serviceName }} without interruption, please contact us or reply to this email to renew your service.</p>
             
             <div style="text-align: center;">
                 {{-- <a href="{{ url('/contact') }}" class="btn">Renew Service</a> --}}
@@ -58,7 +61,7 @@
         </div>
         
         <div class="footer">
-            <p>This is an automated reminder. Please do not reply to this email.</p>
+            <!-- <p>This is an automated reminder. Please do not reply to this email.</p> -->
             <p>© {{ date('Y') }} Cloudtach. All rights reserved.</p>
         </div>
     </div>

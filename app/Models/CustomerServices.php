@@ -33,7 +33,7 @@ class CustomerServices extends Model
     // Check if service is expiring soon (within 7 days)
     public function isExpiringSoon()
     {
-        return Carbon::today()->diffInDays($this->end_date, false) <= 7 &&
+        return Carbon::today()->diffInDays($this->end_date, false) <= 30 &&
             $this->end_date >= Carbon::today();
     }
 

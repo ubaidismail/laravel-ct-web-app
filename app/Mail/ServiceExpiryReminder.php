@@ -48,6 +48,9 @@ class ServiceExpiryReminder extends Mailable
             with: ([
                 'userName' => $this->user->name,
                 'serviceName' => $this->service->service_name,
+                'serviceDescription' => $this->service->service_description,
+                'renewCost' => $this->service->service_price,
+                'serviceDuration' => $this->service->service_duration,
                 'endDate' => $this->service->end_date,
                 'daysLeft' => $this->daysLeft,
             ]),

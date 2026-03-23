@@ -18,12 +18,12 @@ class SendServiceReminders extends Command
 
         $expiringServices = CustomerServices::where('service_status', 'active')
             ->where('end_date', '>=', Carbon::today())
-            ->where('end_date', '<=', Carbon::today()->addDays(7))
+            ->where('end_date', '<=', Carbon::today()->addDays(30))
             ->with('user')
             ->get();
 
         if ($expiringServices->count() == 0) {
-            $this->info('No services expiring in the next 7 days.');
+            $this->info('No services expiring in the next 30 days.');
             return;
         }
 
@@ -33,6 +33,7 @@ class SendServiceReminders extends Command
             try {
                 // Send using Mailable (much cleaner!)
                 Mail::to($service->user->email)
+                ->cc('ubaidismail378@gmail.com')
                     ->send(new ServiceExpiryReminder($service));
 
                 $this->info("Reminder sent for: {$service->service_name} - User: {$service->user->name}");
