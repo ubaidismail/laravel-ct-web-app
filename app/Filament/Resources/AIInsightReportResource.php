@@ -19,7 +19,7 @@ class AIInsightReportResource extends Resource
     protected static ?string $navigationLabel = 'AI Insights Reports (BETA)';
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     protected static ?string $navigationGroup = 'Company';
-
+    protected static ?int $navigationSort = 9;
     public static function form(Form $form): Form
     {
         return $form

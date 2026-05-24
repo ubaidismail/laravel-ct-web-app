@@ -26,9 +26,6 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
-use App\Filament\Widgets\NewCustomerCount;
-use App\Filament\Widgets\NewProspectCount;
-use App\Filament\Widgets\SalesProgress;
 
 
 
@@ -37,12 +34,17 @@ class AdminPanelProvider extends PanelProvider
     public function panel(Panel $panel): Panel
     {
         return $panel
-        // access dashboard with admin user role only
-       
-        ->brandLogo(fn () => view('brand'))
-        ->darkModeBrandLogo(fn () => view('brand-darkMode'))
-        
-        ->favicon(asset('images/fav.png'))
+            // access dashboard with admin user role only
+            ->navigationGroups([
+                'Invoices',
+                'Company',
+                'Analytics',
+                'Upwork Tool',
+            ])
+            ->brandLogo(fn() => view('brand'))
+            ->darkModeBrandLogo(fn() => view('brand-darkMode'))
+
+            ->favicon(asset('images/fav.png'))
             ->default()
             ->id('admin')
             ->path('/')
@@ -55,21 +57,21 @@ class AdminPanelProvider extends PanelProvider
                 'success' => Color::Emerald,
                 'warning' => Color::Orange,
             ])
-    
+
             // ->registration(Register::class)
             ->pages([
                 // UsersList::class,
                 // \App\Filament\Pages\GenerateInsights::class,
-                
+
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
                 // UsersList::class,
                 // \App\Filament\Pages\GenerateInsights::class,
-                
+
             ])
-        
+
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
                 // Widgets\AccountWidget::class,
@@ -92,12 +94,12 @@ class AdminPanelProvider extends PanelProvider
                 AuthenticatePublicProposal::class,
                 \App\Http\Middleware\CheckUserRole::class . ':admin', // Apply the role check middleware for admin
             ])
-            ;
+        ;
 
-            // NavigationItem::make('users')
-            // ->icon('heroicon-o-user')
-            // ->url(fn (): string => '/users/')
-            // ->visible(fn (): bool => auth()->user()->role !== 'admin');
-           
+        // NavigationItem::make('users')
+        // ->icon('heroicon-o-user')
+        // ->url(fn (): string => '/users/')
+        // ->visible(fn (): bool => auth()->user()->role !== 'admin');
+
     }
 }

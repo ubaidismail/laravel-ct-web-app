@@ -21,7 +21,9 @@ use App\Models\ProposalViews;
 class ProposalResource extends Resource
 {
     protected static ?string $model = Proposals::class;
-
+     protected static ?string $navigationGroup = 'Company';
+    
+    protected static ?int $navigationSort = 2;
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     /**

@@ -24,7 +24,9 @@ class SalesTargetOfRepsResource extends Resource
     protected static ?string $model = SalesTargetOfReps::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-
+    protected static ?string $navigationGroup = 'Company';
+    // position
+    protected static ?int $navigationSort = 1;
     public static function form(Form $form): Form
     {
         return $form

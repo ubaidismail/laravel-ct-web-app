@@ -25,7 +25,7 @@ use Filament\Forms\Components\DatePicker;
 class CustomerServicesResource extends Resource
 {
     protected static ?string $model = CustomerServices::class;
-
+    protected static ?string $navigationGroup = 'Company';
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     public static function shouldRegisterNavigation(): bool {
